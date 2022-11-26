@@ -52,7 +52,15 @@ class _MyHomePageState extends State<MyHomePage>
             color: const Color(0xFF1a6124),
           ),
         ),
-        Hole(leftPosition: moveController.holePosition),
+        Stack(
+            children: List.generate(
+                3,
+                (index) => Hole(
+                    leftPosition: moveController.holePosition[index] +
+                        moveController.moveUnit))),
+        /*  Hole(
+            leftPosition:
+                moveController.holePosition + moveController.moveUnit),*/
         Positioned(
           bottom: Move.freemanPositionY,
           left: Move.freemanPositionX,
@@ -66,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage>
           offset: const Offset(300, 300),
           child: ElevatedButton(
               onPressed: () {
-                moveController._AnimatedPhysicalModel();
+                moveController._reset();
               },
               child: const Text("Reset")),
         ),
@@ -88,10 +96,10 @@ class Move extends GetxController {
   Move();
   double offsetMove = 0;
 
-  _AnimatedPhysicalModel() {
+  _reset() {
     freemanPositionY = 145;
     freemanPositionX = 100;
-    holePosition = 600;
+    holePosition = [300];
     moveUnit = 0;
     trickt = 0;
 
@@ -103,27 +111,43 @@ class Move extends GetxController {
   static double freemanPositionY = 145;
   static double freemanPositionX = 100;
 
-  double holePosition = 200;
+  List<double> holePosition = [250, 430, 600];
   double moveUnit = 0;
   int trickt = 0;
+  int indexHoleList = 0;
 
   bool fail = false;
 
+  double finalposition = 0;
+
   holeMove() async {
-    await Future.delayed(const Duration(milliseconds: 1), () {
-      holePosition = holePosition - moveUnit;
+    if (holePosition[indexHoleList] < 56 && indexHoleList < 2) {
+      indexHoleList++;
+    }
+    await Future.delayed(const Duration(milliseconds: 20), () {
+      holePosition[0] = holePosition[0] - moveUnit;
+      holePosition[1] = holePosition[1] - moveUnit;
+      holePosition[2] = holePosition[2] - moveUnit;
+      /*   holePosition.forEach((element) {
+        element = element - moveUnit;
+      });*/
     });
 
     trickt++;
-    if (trickt == 20) {
+    if (trickt == 1) {
       moveUnit = 1;
     }
 
-    if (holePosition < 100 && holePosition > 55 && fail == false) {
+    finalposition = holePosition[indexHoleList] + moveUnit;
+
+    if (finalposition < 100 &&
+        finalposition > 55 &&
+        fail == false &&
+        freemanPositionY == 145) {
       fail = true;
     }
     failAnimate();
-    if (holePosition != -120) {
+    if (finalposition != -300) {
       holeMove();
     } else {
       print("Compleat");
@@ -141,12 +165,10 @@ class Move extends GetxController {
   bool jump = true;
   bool jumpComplete = false;
   jumpAnime() async {
-    await Future.delayed(const Duration(microseconds: 999), () {
+    await Future.delayed(const Duration(milliseconds: 10), () {
       if (jump == true && Move.freemanPositionY++ < 330) {
-        print("----ToTop----- ${Move.freemanPositionY}");
         Move.freemanPositionY++;
       } else {
-        print("----ToBottom-----");
         jump = false;
         if (Move.freemanPositionY-- > 146) {
           Move.freemanPositionY--;
@@ -166,7 +188,7 @@ class Move extends GetxController {
 
   @override
   void onInit() {
-    // holeMove();
+    holeMove();
     super.onInit();
   }
 }
