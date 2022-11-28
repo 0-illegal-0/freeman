@@ -40,54 +40,66 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     Move moveController = Get.put(Move(), permanent: false);
-
+    print("This is width${width}");
     return GetBuilder<Move>(builder: (context) {
-      return Stack(children: [
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            // width: double.infinity,
-            width: width,
-            height: 145,
-            color: const Color(0xFF1a6124),
+      return SizedBox(
+        width: 9940,
+        height: double.infinity,
+        child: Stack(children: [
+          /*  Hole(
+              leftPosition:
+                  moveController.holePosition + moveController.moveUnit),*/
+          Positioned(
+            bottom: Move.freemanPositionY,
+            left: Move.freemanPositionX,
+            child: Container(
+              width: 25,
+              height: 25,
+              color: const Color(0xFF850310),
+            ),
           ),
-        ),
-        Stack(
-            children: List.generate(
-                3,
-                (index) => Hole(
-                    leftPosition: moveController.holePosition[index] +
-                        moveController.moveUnit))),
-        /*  Hole(
-            leftPosition:
-                moveController.holePosition + moveController.moveUnit),*/
-        Positioned(
-          bottom: Move.freemanPositionY,
-          left: Move.freemanPositionX,
-          child: Container(
-            width: 25,
-            height: 25,
-            color: const Color(0xFF850310),
+          Positioned(
+            left: Move.surfaceMarginLeft,
+            bottom: 0,
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: 9940,
+                  height: 135,
+                  child: Image.asset(
+                    "assets/images/surface.png",
+                    fit: BoxFit.cover,
+                    //width: 7200,
+                    //  height: 135,
+                  ),
+                )
+                /*Container(
+                // width: double.infinity,
+                width: width,
+                height: 135,
+                color: const Color(0xFF1a6124),
+              ),*/
+                ),
           ),
-        ),
-        Transform.translate(
-          offset: const Offset(300, 300),
-          child: ElevatedButton(
-              onPressed: () {
-                moveController._reset();
-              },
-              child: const Text("Reset")),
-        ),
-        Positioned(
-          right: 20,
-          bottom: 20,
-          child: ElevatedButton(
-              onPressed: () {
-                moveController.jumpAnime();
-              },
-              child: const Text("Jump")),
-        )
-      ]);
+          Transform.translate(
+            offset: const Offset(300, 300),
+            child: ElevatedButton(
+                onPressed: () {
+                  moveController._reset();
+                },
+                child: const Text("Reset")),
+          ),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: ElevatedButton(
+                onPressed: () {
+                  moveController.jumpAnime();
+                },
+                child: const Text("Jump")),
+          )
+        ]),
+      );
     });
   }
 }
@@ -95,23 +107,31 @@ class _MyHomePageState extends State<MyHomePage>
 class Move extends GetxController {
   Move();
   double offsetMove = 0;
+  static double surfaceMarginLeft = 0;
+
+  static List<double> stagesWidth = [9940];
 
   _reset() {
-    freemanPositionY = 145;
+    freemanPositionY = 135;
     freemanPositionX = 100;
-    holePosition = [300];
+    //holePosition = [250, 430, 600];
     moveUnit = 0;
     trickt = 0;
-
+    indexHoleList = 0;
+    finalposition = 0;
     fail = false;
     update();
     holeMove();
   }
 
-  static double freemanPositionY = 145;
+  static double freemanPositionY = 135;
   static double freemanPositionX = 100;
 
-  List<double> holePosition = [250, 430, 600];
+  List<Map<String, double>> holePosition = [
+    {'margin-left': 250, 'width': 70, 'minimumMargin': 55},
+    {'margin-left': 430, 'width': 30, 'minimumMargin': 95},
+    {'margin-left': 600, 'width': 90, 'minimumMargin': 35}
+  ];
   double moveUnit = 0;
   int trickt = 0;
   int indexHoleList = 0;
@@ -121,16 +141,17 @@ class Move extends GetxController {
   double finalposition = 0;
 
   holeMove() async {
-    if (holePosition[indexHoleList] < 56 && indexHoleList < 2) {
+    /* if (holePosition[indexHoleList]['margin-left']! < 56 && indexHoleList < 2) {
       indexHoleList++;
-    }
-    await Future.delayed(const Duration(milliseconds: 20), () {
-      holePosition[0] = holePosition[0] - moveUnit;
-      holePosition[1] = holePosition[1] - moveUnit;
-      holePosition[2] = holePosition[2] - moveUnit;
-      /*   holePosition.forEach((element) {
-        element = element - moveUnit;
-      });*/
+    }*/
+    await Future.delayed(const Duration(microseconds: 1), () {
+      holePosition[0]['margin-left'] =
+          holePosition[0]['margin-left']! - moveUnit;
+      surfaceMarginLeft--;
+      /* holePosition[1]['margin-left'] =
+          holePosition[1]['margin-left']! - moveUnit;
+      holePosition[2]['margin-left'] =
+          holePosition[2]['margin-left']! - moveUnit;*/
     });
 
     trickt++;
@@ -138,16 +159,16 @@ class Move extends GetxController {
       moveUnit = 1;
     }
 
-    finalposition = holePosition[indexHoleList] + moveUnit;
+    finalposition = holePosition[indexHoleList]['margin-left']! + moveUnit;
 
     if (finalposition < 100 &&
-        finalposition > 55 &&
+        finalposition > holePosition[indexHoleList]['minimumMargin']!.toInt() &&
         fail == false &&
-        freemanPositionY == 145) {
+        freemanPositionY == 135) {
       fail = true;
     }
     failAnimate();
-    if (finalposition != -300) {
+    if (surfaceMarginLeft != -9230) {
       holeMove();
     } else {
       print("Compleat");
@@ -156,6 +177,7 @@ class Move extends GetxController {
   }
 
   failAnimate() {
+    print("This is fail $fail");
     if (fail == true) {
       freemanPositionY = freemanPositionY - 1;
       freemanPositionX = freemanPositionX - 1;
@@ -165,12 +187,12 @@ class Move extends GetxController {
   bool jump = true;
   bool jumpComplete = false;
   jumpAnime() async {
-    await Future.delayed(const Duration(milliseconds: 10), () {
+    await Future.delayed(const Duration(milliseconds: 1), () {
       if (jump == true && Move.freemanPositionY++ < 330) {
         Move.freemanPositionY++;
       } else {
         jump = false;
-        if (Move.freemanPositionY-- > 146) {
+        if (Move.freemanPositionY > 135) {
           Move.freemanPositionY--;
         } else {
           jump = true;
@@ -194,9 +216,10 @@ class Move extends GetxController {
 }
 
 class Hole extends StatelessWidget {
-  const Hole({Key? key, this.leftPosition}) : super(key: key);
+  const Hole({Key? key, this.leftPosition, this.holeWidth}) : super(key: key);
 
   final double? leftPosition;
+  final double? holeWidth;
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -204,8 +227,8 @@ class Hole extends StatelessWidget {
       bottom: 0,
       left: leftPosition == null ? 600 : leftPosition,
       child: Container(
-        width: 70,
-        height: 145,
+        width: holeWidth,
+        height: 135,
         color: const Color(0xFFcacccb),
       ),
     );
@@ -234,3 +257,10 @@ class ForTest3 extends GetxController {
     super.onInit();
   }
 }
+
+
+
+
+/* [stages width] 
+- first stage 10000
+*/
