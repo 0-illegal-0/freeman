@@ -46,18 +46,6 @@ class _MyHomePageState extends State<MyHomePage>
         width: 9940,
         height: double.infinity,
         child: Stack(children: [
-          /*  Hole(
-              leftPosition:
-                  moveController.holePosition + moveController.moveUnit),*/
-          Positioned(
-            bottom: Move.freemanPositionY,
-            left: Move.freemanPositionX,
-            child: Container(
-              width: 25,
-              height: 25,
-              color: const Color(0xFF850310),
-            ),
-          ),
           Positioned(
             left: Move.surfaceMarginLeft,
             bottom: 0,
@@ -69,26 +57,59 @@ class _MyHomePageState extends State<MyHomePage>
                   child: Image.asset(
                     "assets/images/surface.png",
                     fit: BoxFit.cover,
-                    //width: 7200,
-                    //  height: 135,
                   ),
-                )
-                /*Container(
-                // width: double.infinity,
-                width: width,
-                height: 135,
-                color: const Color(0xFF1a6124),
-              ),*/
-                ),
+                )),
           ),
           Transform.translate(
-            offset: const Offset(300, 300),
-            child: ElevatedButton(
-                onPressed: () {
-                  moveController._reset();
-                },
-                child: const Text("Reset")),
+            offset: Offset(-Move.offsetX, 0),
+            child: Stack(
+                children: List.generate(
+              Move.holePosition.length,
+              (index) => Hole(
+                  holeWidth: Move.holePosition[index]['width'],
+                  leftPosition: Move.holePosition[index][
+                      'margin-left']! /* -
+                      Move.offsetX */ //   moveController.moveUnit,
+                  ),
+            )),
           ),
+          Positioned(
+            bottom: Move.freemanPositionY,
+            left: Move.freemanPositionX,
+            child: Container(
+              width: 25,
+              height: 25,
+              color: const Color(0xFF850310),
+            ),
+          ),
+          Positioned(
+              left: 50,
+              bottom: 20,
+              child: Row(children: [
+                GestureDetector(
+                    onPanStart: (details) {
+                      Move.back = true;
+                      moveController.toBehind();
+                    },
+                    onPanEnd: (details) {
+                      Move.back = false;
+                    },
+                    child: const Icon(
+                      Icons.arrow_back_ios_outlined,
+                    )),
+                const SizedBox(width: 40),
+                GestureDetector(
+                    onPanStart: (details) {
+                      Move.forwod = true;
+                      moveController.executeForward();
+                    },
+                    onPanEnd: (details) {
+                      Move.forwod = false;
+                    },
+                    child: const Icon(
+                      Icons.arrow_forward_ios_outlined,
+                    )),
+              ])),
           Positioned(
             right: 20,
             bottom: 20,
@@ -97,6 +118,15 @@ class _MyHomePageState extends State<MyHomePage>
                   moveController.jumpAnime();
                 },
                 child: const Text("Jump")),
+          ),
+          Positioned(
+            right: 110,
+            bottom: 20,
+            child: ElevatedButton(
+                onPressed: () {
+                  moveController.moveBackground();
+                },
+                child: const Text("move")),
           )
         ]),
       );
@@ -108,92 +138,127 @@ class Move extends GetxController {
   Move();
   double offsetMove = 0;
   static double surfaceMarginLeft = 0;
-
+  static bool forwod = false;
+  static bool back = false;
   static List<double> stagesWidth = [9940];
 
-  _reset() {
-    freemanPositionY = 135;
-    freemanPositionX = 100;
-    //holePosition = [250, 430, 600];
-    moveUnit = 0;
-    trickt = 0;
-    indexHoleList = 0;
-    finalposition = 0;
-    fail = false;
+  static double offsetX = 0;
+  moveBackground() {
+    offsetX--;
+    print(offsetX);
     update();
-    holeMove();
+  }
+
+  executeForward() async {
+    await Future.delayed(const Duration(seconds: 0), () async {
+      if (forwod == true && fail == false) {
+        await toForward();
+      } else {
+        await failAnimate();
+      }
+    });
+    if (forwod == true) {
+      executeForward();
+    }
+  }
+
+  toBehind() async {
+    await Future.delayed(const Duration(seconds: 0), () async {
+      if (back == true && fail == false) {
+        await toBack();
+      } else {
+        await failAnimate();
+      }
+    });
+    if (back == true) {
+      toBehind();
+    }
   }
 
   static double freemanPositionY = 135;
   static double freemanPositionX = 100;
 
-  List<Map<String, double>> holePosition = [
+  static List<Map<String, double>> holePosition = [
     {'margin-left': 250, 'width': 70, 'minimumMargin': 55},
     {'margin-left': 430, 'width': 30, 'minimumMargin': 95},
-    {'margin-left': 600, 'width': 90, 'minimumMargin': 35}
+    {'margin-left': 600, 'width': 90, 'minimumMargin': 35},
   ];
-  double moveUnit = 0;
-  int trickt = 0;
+  // double moveUnit = 1.0;
   int indexHoleList = 0;
-
-  bool fail = false;
-
   double finalposition = 0;
 
-  holeMove() async {
-    /* if (holePosition[indexHoleList]['margin-left']! < 56 && indexHoleList < 2) {
+  toForward() async {
+    finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
+
+    if (finalposition < holePosition[indexHoleList]['minimumMargin']! &&
+        indexHoleList < holePosition.length - 1) {
       indexHoleList++;
-    }*/
-    await Future.delayed(const Duration(microseconds: 1), () {
-      holePosition[0]['margin-left'] =
-          holePosition[0]['margin-left']! - moveUnit;
-      surfaceMarginLeft--;
-      /* holePosition[1]['margin-left'] =
-          holePosition[1]['margin-left']! - moveUnit;
-      holePosition[2]['margin-left'] =
-          holePosition[2]['margin-left']! - moveUnit;*/
+    }
+
+    await Future.delayed(const Duration(milliseconds: 1), () {
+      offsetX++;
     });
 
-    trickt++;
-    if (trickt == 1) {
-      moveUnit = 1;
-    }
+    checkFailState();
 
-    finalposition = holePosition[indexHoleList]['margin-left']! + moveUnit;
+    update();
+  }
 
-    if (finalposition < 100 &&
-        finalposition > holePosition[indexHoleList]['minimumMargin']!.toInt() &&
-        fail == false &&
-        freemanPositionY == 135) {
-      fail = true;
-    }
-    failAnimate();
-    if (surfaceMarginLeft != -9230) {
-      holeMove();
+  int trick = 0;
+  bool lastStageHole = false;
+  toBack() async {
+    if (indexHoleList > 0 &&
+        indexHoleList < holePosition.length &&
+        holePosition[holePosition.length - 1]['margin-left']! - offsetX >
+            freemanPositionX) {
+      trick = 1;
+      lastStageHole = false;
     } else {
-      print("Compleat");
+      lastStageHole = true;
+      trick = 0;
+    }
+
+    finalposition =
+        holePosition[indexHoleList - trick]['margin-left']! - offsetX;
+    checkFailState();
+
+    if (finalposition >= freemanPositionX &&
+        indexHoleList > 0 &&
+        lastStageHole != true) {
+      indexHoleList--;
+    }
+    print("this is trick $trick");
+    await Future.delayed(const Duration(milliseconds: 1), () {
+      offsetX--;
+    });
+
+    update();
+  }
+
+  bool fail = false;
+  failAnimate() async {
+    await Future.delayed(const Duration(milliseconds: 3), () {
+      if (fail == true) {
+        freemanPositionY = freemanPositionY - 2;
+      }
+    });
+    if (freemanPositionY > -25 && fail == true) {
+      failAnimate();
     }
     update();
   }
 
-  failAnimate() {
-    print("This is fail $fail");
-    if (fail == true) {
-      freemanPositionY = freemanPositionY - 1;
-      freemanPositionX = freemanPositionX - 1;
-    }
-  }
-
   bool jump = true;
   bool jumpComplete = false;
+
   jumpAnime() async {
     await Future.delayed(const Duration(milliseconds: 1), () {
-      if (jump == true && Move.freemanPositionY++ < 330) {
-        Move.freemanPositionY++;
+      if (jump == true && freemanPositionY++ < 330) {
+        freemanPositionY++;
       } else {
         jump = false;
-        if (Move.freemanPositionY > 135) {
-          Move.freemanPositionY--;
+        if (freemanPositionY > 135) {
+          freemanPositionY--;
         } else {
           jump = true;
           jumpComplete = true;
@@ -205,12 +270,30 @@ class Move extends GetxController {
       jumpAnime();
     } else {
       jumpComplete = false;
+      checkFailState();
+      failAnimate();
+    }
+  }
+
+  checkFailState() {
+    if (fail == false) {
+      if (finalposition < 100 &&
+          finalposition >
+              holePosition[indexHoleList - trick]['minimumMargin']!.toInt() &&
+          freemanPositionY == 135) {
+        fail = true;
+        print("finalposition $finalposition");
+        print(
+            "finalposition ${holePosition[indexHoleList]['minimumMargin']!.toInt()}");
+        print("goooooooooooooo");
+      }
     }
   }
 
   @override
-  void onInit() {
-    holeMove();
+  void onInit() async {
+    // holeMove();
+    // await execute();
     super.onInit();
   }
 }
