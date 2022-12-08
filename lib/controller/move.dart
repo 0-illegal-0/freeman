@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:freeman/main.dart';
 import 'package:get/get.dart';
 
@@ -91,7 +92,6 @@ class Move extends GetxController {
     await Future.delayed(const Duration(milliseconds: 1), () {
       offsetX--;
     });
-
     update();
   }
 
@@ -151,21 +151,98 @@ class Move extends GetxController {
     return coins[coinCurrentIndex]['left-position'] - Move.offsetX;
   }
 
-  coinListener() async {
-    await Future.delayed(Duration(milliseconds: duration), () {
-      if (currentCointPositionX < 710 && currentCointPositionX > -100) {
-        print("===============");
-        duration = 10;
-      } else {
-        duration = 1000;
-      }
-    });
-    coinListener();
-
-    //  print("This is duration $duration");
+  int get currentCointCount {
+    return coins[coinCurrentIndex]['count'];
   }
 
-  coinEffect() {}
+  double get currentCointPositionY {
+    return coins[coinCurrentIndex]['bottom-position'];
+  }
+
+  double get fullCollectionWidth {
+    return currentCointCount * 35;
+  }
+
+  double get minIndexPosition {
+    if (coinCurrentIndex < 1) {
+      return 0.0;
+    } else {
+      return coins[coinCurrentIndex - 1]["max-index-position"];
+    }
+  }
+
+  getCurrentIndex() {
+    if (Move.offsetX > coins[coinCurrentIndex]["max-index-position"] &&
+        coinCurrentIndex < coins.length - 1) {
+      coinCurrentIndex++;
+    }
+    if (Move.offsetX < minIndexPosition) {
+      coinCurrentIndex--;
+    }
+  }
+
+  coinListener() async {
+    getCurrentIndex();
+    await Future.delayed(Duration(milliseconds: duration), () {
+      if (currentCointPositionX < 710 && currentCointPositionX > -100) {
+        duration = 30;
+      } else {
+        duration = 1000;
+        print("$currentCointPositionX ++++");
+        print("${Move.offsetX} ++++");
+      }
+    });
+    if (currentCointPositionX < 225 && currentCointPositionX > -100) {
+      coinEffect();
+    } else {
+      coinListener();
+    }
+    print("This is coinCurrentIndex $coinCurrentIndex");
+  }
+
+  int get collectionIndexCount {
+    if (coinCurrentIndex < 1) {
+      return 0;
+    } else {
+      return coins[coinCurrentIndex - 1]['count'];
+    }
+  }
+
+  coinEffect() async {
+    double coinwidth = 0;
+    await Future.delayed(const Duration(milliseconds: 10), () {
+      for (var i = 0; i < currentCointCount; i++) {
+        if (Move.offsetX - coinwidth <
+                coins[coinCurrentIndex]['max-position'] &&
+            Move.offsetX - coinwidth >
+                coins[coinCurrentIndex]['min-position'] &&
+            freemanPositionY > 205 &&
+            freemanPositionY < 265) {
+          coinsColor[i + collectionIndexCount] = const Color(0xFFcacccb);
+        }
+        coinwidth = coinwidth + 35;
+      }
+    });
+    if (currentCointPositionX < 225 && currentCointPositionX > -100) {
+      coinEffect();
+    } else {
+      coinListener();
+    }
+  }
+
+  static List<Color> coinsColor = [
+    Colors.green,
+    Colors.green,
+    Colors.green,
+    Colors.green,
+    Colors.green,
+    Colors.green,
+    Colors.green,
+    Colors.green,
+    Colors.green,
+    Colors.green,
+    Colors.green
+  ];
 
   @override
   void onInit() async {

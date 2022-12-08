@@ -159,6 +159,7 @@ class Coin extends StatelessWidget {
   final List? collectionCoins;
   @override
   Widget build(BuildContext context) {
+    int counterIndex = -1;
     return Stack(
         children: List.generate(
       collectionCoins!.length,
@@ -169,16 +170,20 @@ class Coin extends StatelessWidget {
         child: Row(
             children: List.generate(
           collectionCoins![collectionIndex]['count'],
-          (index) => SizedBox(
-            width: 35,
-            height: 35,
-            child: Center(
-                child: Container(
-                    width: 25,
-                    height: 25,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.green))),
-          ),
+          (index) {
+            counterIndex++;
+            return SizedBox(
+              width: 35,
+              height: 35,
+              child: Center(
+                  child: Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Move.coinsColor[counterIndex]))),
+            );
+          },
         )),
       ),
     ));
@@ -186,6 +191,20 @@ class Coin extends StatelessWidget {
 }
 
 const List coins = [
-  {"count": 3, "left-position": 800.0, "bottom-position": 230.0},
-  {"count": 4, "left-position": 1500.0, "bottom-position": 230.0}
+  {
+    "count": 3,
+    "left-position": 800.0,
+    "bottom-position": 230.0,
+    "max-position": 735.0,
+    "min-position": 675.0,
+    "max-index-position": 825.0
+  },
+  {
+    "count": 4,
+    "left-position": 1500.0,
+    "bottom-position": 230.0,
+    "max-position": 1435.0,
+    "min-position": 1375.0,
+    "max-index-position": 1520.0
+  }
 ];
