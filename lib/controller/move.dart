@@ -10,7 +10,6 @@ class Move extends GetxController {
   static bool forwod = false;
   static bool back = false;
   static List<double> stagesWidth = [9940];
-
   static double offsetX = 0;
 
   toForward() async {
@@ -42,12 +41,6 @@ class Move extends GetxController {
   static double freemanPositionY = 135;
   static double freemanPositionX = 100;
 
-  static List<Map<String, double>> holePosition = [
-    {'margin-left': 250, 'width': 70, 'minimum-margin': 55},
-    {'margin-left': 430, 'width': 30, 'minimum-margin': 95},
-    {'margin-left': 600, 'width': 90, 'minimum-margin': 35},
-  ];
-
   int indexHoleList = 0;
   double finalposition = 0;
 
@@ -62,7 +55,6 @@ class Move extends GetxController {
     await Future.delayed(const Duration(milliseconds: 1), () {
       offsetX++;
     });
-
     update();
   }
 
@@ -146,17 +138,13 @@ class Move extends GetxController {
     }
   }
 
-  int duration = 10, coinCurrentIndex = 0;
+  int coinCurrentIndex = 0;
   double get currentCointPositionX {
     return coins[coinCurrentIndex]['left-position'] - Move.offsetX;
   }
 
   int get currentCointCount {
     return coins[coinCurrentIndex]['count'];
-  }
-
-  double get currentCointPositionY {
-    return coins[coinCurrentIndex]['bottom-position'];
   }
 
   double get fullCollectionWidth {
@@ -181,6 +169,7 @@ class Move extends GetxController {
     }
   }
 
+  int duration = 1000;
   coinListener() async {
     getCurrentIndex();
     await Future.delayed(Duration(milliseconds: duration), () {
@@ -188,8 +177,6 @@ class Move extends GetxController {
         duration = 30;
       } else {
         duration = 1000;
-        print("$currentCointPositionX ++++");
-        print("${Move.offsetX} ++++");
       }
     });
     if (currentCointPositionX < 225 && currentCointPositionX > -100) {
@@ -197,7 +184,6 @@ class Move extends GetxController {
     } else {
       coinListener();
     }
-    print("This is coinCurrentIndex $coinCurrentIndex");
   }
 
   int get collectionIndexCount {
@@ -244,9 +230,99 @@ class Move extends GetxController {
     Colors.green
   ];
 
+  int checkLandDuration = 1000, currentLandIndex = 0;
+  bool landState = false;
+  horizontalLandeMove() async {
+    await Future.delayed(Duration(milliseconds: checkLandDuration), () {
+      if (offsetX > moveLands[currentLandIndex]['effective-range']!) {
+        landState = true;
+      } else {
+        landState = false;
+      }
+    });
+    horizontalLandeMove();
+  }
+
+  static double horizontalLand = 0.0;
+  bool landRightMove = false;
+  bool landLeftMove = true;
+
+  landNoveEffect() async {
+    await Future.delayed(const Duration(milliseconds: 10), () {
+      if (landRightMove == false) {
+        landToRight();
+        if (freemanPositionY == 135 &&
+            currentLandPosition < freemanPositionX + 25) {
+          freemanPositionX = currentLandPosition;
+          print("cooooo");
+        }
+      } else {
+        landToleft();
+      }
+      if (freemanPositionY == 135 &&
+          currentLandPosition < freemanPositionX + 25) {
+        freemanPositionX = currentLandPosition;
+        print("cooooo");
+      }
+    });
+    //   print("::::::::::::: $currentLandPosition");
+    landNoveEffect();
+    update();
+  }
+
+  landToRight() {
+    horizontalLand = horizontalLand + 2;
+    if (horizontalLand == 394) {
+      landRightMove = true;
+    }
+  }
+
+  landToleft() {
+    horizontalLand = horizontalLand - 2;
+    if (horizontalLand == 0) {
+      landRightMove = false;
+    }
+  }
+
+  double get currentLandPosition {
+    return moveLands[0]['margin-left']! - offsetX + horizontalLand;
+  }
+
   @override
   void onInit() async {
     coinListener();
+    horizontalLandeMove();
+    landNoveEffect();
     super.onInit();
   }
 }
+
+const List<Map<String, double>> holePosition = [
+  {'margin-left': 250, 'width': 70, 'minimum-margin': 55},
+  {'margin-left': 600, 'width': 90, 'minimum-margin': 35},
+  {'margin-left': 1200, 'width': 550, 'minimum-margin': -425},
+];
+
+const List coins = [
+  {
+    "count": 3,
+    "left-position": 800.0,
+    "bottom-position": 230.0,
+    "max-position": 735.0,
+    "min-position": 675.0,
+    "max-index-position": 825.0
+  },
+  {
+    "count": 4,
+    "left-position": 1500.0,
+    "bottom-position": 230.0,
+    "max-position": 1435.0,
+    "min-position": 1375.0,
+    "max-index-position": 1520.0
+  }
+];
+
+const List<Map<String, double>> moveLands = [
+  {'margin-left': 1204, 'effective-range': 700},
+//  {'margin-left': 600},
+];

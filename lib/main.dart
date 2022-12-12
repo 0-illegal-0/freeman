@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freeman/controller/move.dart';
+import 'package:freeman/sections/moving_land.dart';
 import 'package:get/get.dart';
 //import 'dart:async';
 
@@ -50,18 +51,18 @@ class _MyHomePageState extends State<MyHomePage>
           Positioned(
             left: -Move.offsetX,
             bottom: 0,
-            child: Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: 9940,
-                  height: 135,
-                  child: Image.asset(
-                    "assets/images/surface.png",
-                    fit: BoxFit.cover,
-                  ),
-                )),
+            child: SizedBox(
+              width: 9940,
+              height: 360,
+              child: Image.asset(
+                "assets/images/land.png",
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          Transform.translate(
+          MovingLand(
+              offsetX: Move.offsetX, horizontalLand: Move.horizontalLand),
+          /* Transform.translate(
             offset: Offset(-Move.offsetX, 0),
             child: Stack(
                 children: List.generate(
@@ -70,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage>
                   holeWidth: Move.holePosition[index]['width'],
                   leftPosition: Move.holePosition[index]['margin-left']!),
             )),
-          ),
+          ),*/
           Coin(collectionCoins: coins),
           Positioned(
             bottom: Move.freemanPositionY,
@@ -189,22 +190,3 @@ class Coin extends StatelessWidget {
     ));
   }
 }
-
-const List coins = [
-  {
-    "count": 3,
-    "left-position": 800.0,
-    "bottom-position": 230.0,
-    "max-position": 735.0,
-    "min-position": 675.0,
-    "max-index-position": 825.0
-  },
-  {
-    "count": 4,
-    "left-position": 1500.0,
-    "bottom-position": 230.0,
-    "max-position": 1435.0,
-    "min-position": 1375.0,
-    "max-index-position": 1520.0
-  }
-];
