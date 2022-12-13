@@ -14,6 +14,8 @@ class Move extends GetxController {
 
   toForward() async {
     await Future.delayed(const Duration(seconds: 0), () async {
+      currentAvatarState();
+      avatarForwardWithLand();
       if (forwod == true && fail == false) {
         await forward();
       } else {
@@ -23,6 +25,7 @@ class Move extends GetxController {
     if (forwod == true) {
       toForward();
     }
+    print("This is OFFSET ++++++ $offsetX");
   }
 
   toBack() async {
@@ -132,9 +135,42 @@ class Move extends GetxController {
       if (finalposition < 100 &&
           finalposition >
               holePosition[indexHoleList - trick]['minimum-margin']!.toInt() &&
-          freemanPositionY == 135) {
+          freemanPositionY == 135 &&
+          freemanPositionY == 135 &&
+          currentLandPosition > freemanPositionX + 25) {
         fail = true;
       }
+    }
+  }
+
+  avatarForwardWithLand() {
+    if (landState == true) {
+      if (freemanPositionY == 135 &&
+          currentLandPosition < freemanPositionX + 25) {
+        freemanPositionX = currentLandPosition + avatarMove;
+        avatarMoveState = true;
+      }
+      avatarMoveExecute();
+    }
+  }
+
+  avatarBackWithLand() {
+    if (landState == true) {
+      if (freemanPositionY == 135 &&
+          currentLandPosition + 150 > freemanPositionX + 25) {
+        freemanPositionX = currentLandPosition + avatarMove;
+        avatarMoveState = true;
+      }
+      print("This is Back");
+      avatarMoveExecute();
+    }
+  }
+
+  double avatarMove = 0;
+  bool avatarMoveState = false;
+  avatarMoveExecute() {
+    if (avatarMoveState == true) {
+      avatarMove++;
     }
   }
 
@@ -232,6 +268,7 @@ class Move extends GetxController {
 
   int checkLandDuration = 1000, currentLandIndex = 0;
   bool landState = false;
+
   horizontalLandeMove() async {
     await Future.delayed(Duration(milliseconds: checkLandDuration), () {
       if (offsetX > moveLands[currentLandIndex]['effective-range']!) {
@@ -246,28 +283,41 @@ class Move extends GetxController {
   static double horizontalLand = 0.0;
   bool landRightMove = false;
   bool landLeftMove = true;
+  String avatarState = "toRight";
+
+  currentAvatarState() {
+    if (freemanPositionX >
+        holePosition[2]['margin-left']!.toInt() + 550 - offsetX) {
+      avatarState = "toLeft";
+    }
+  }
 
   landNoveEffect() async {
     await Future.delayed(const Duration(milliseconds: 10), () {
       if (landRightMove == false) {
         landToRight();
-        if (freemanPositionY == 135 &&
-            currentLandPosition < freemanPositionX + 25) {
-          freemanPositionX = currentLandPosition;
-          print("cooooo");
-        }
+        avatarWithLand();
       } else {
+        avatarWithLand();
         landToleft();
       }
-      if (freemanPositionY == 135 &&
-          currentLandPosition < freemanPositionX + 25) {
-        freemanPositionX = currentLandPosition;
-        print("cooooo");
-      }
     });
-    //   print("::::::::::::: $currentLandPosition");
     landNoveEffect();
     update();
+  }
+
+  avatarWithLand() {
+    if (freemanPositionY == 135 &&
+        currentLandPosition < freemanPositionX + 25 &&
+        currentLandPosition + 150 > freemanPositionX) {
+      if (avatarState == "toRight") {
+        freemanPositionX = currentLandPosition + avatarMove;
+        avatarMoveState = true;
+      } else {
+        freemanPositionX = currentLandPosition + 125;
+        avatarMoveState = true;
+      }
+    }
   }
 
   landToRight() {
