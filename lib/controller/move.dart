@@ -147,18 +147,25 @@ class Move extends GetxController {
         }
       }
     } else {
-      print("this is avatarMove $avatarMove");
       if (fail == false) {
-        if (/*finalposition < freemanPositionX &&
+        if (freemanPositionX > finalposition &&
+                avatarMoveState != true &&
+                freemanPositionY == 135 &&
+                currentLandPosition > freemanPositionX + 25 &&
                 finalposition >
                     freemanPositionX -
                         holePosition[indexHoleList - trick]['width']!.toInt() +
-                        25 &&*/
-            freemanPositionY == 135 &&
-                    avatarMoveState == true &&
-                    currentLandPosition > freemanPositionX + 25 ||
-                freemanPositionX > currentLandPosition + 150 &&
-                    freemanPositionY == 135) {
+                        25 ||
+            freemanPositionY == 139 &&
+                avatarMoveState == true &&
+                currentLandPosition > freemanPositionX + 25 ||
+            freemanPositionX > currentLandPosition + 150 &&
+                freemanPositionX + 25 <
+                    finalposition +
+                        holePosition[indexHoleList - trick]['width']!.toInt() &&
+                freemanPositionY == 135) {
+          print(
+              "this is holePosition ${holePosition[indexHoleList - trick]['width']!.toInt()}");
           print("this is freemanPositionX $freemanPositionX");
           print("this is currentLandPosition ${currentLandPosition}");
           print("this is avatarMove $avatarMove");
@@ -314,31 +321,52 @@ class Move extends GetxController {
     if (Move.freemanPositionY == 135 &&
         currentLandPosition < Move.freemanPositionX + 25 &&
         currentLandPosition + 150 > Move.freemanPositionX) {
-      if (avatarState == "toRight" && landRightMove == false) {
+      avatarMoveState = true;
+      if (/*avatarState == "toRight" &&*/ landRightMove == false) {
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
-        avatarMoveState = true;
+        // avatarMoveState = true;
         if (testPlus == true) {
           testDouble = 2;
           testPlus = false;
         }
-      } else if (avatarState == "toRight" &&
-          landRightMove != false &&
-          avatarMoveState == true) {
-        print(".......");
+      } else if (/*avatarState == "toRight" &&*/
+          landRightMove != false && avatarMoveState == true) {
         Move.freemanPositionX = Move.freemanPositionX - testDouble;
-        avatarMoveState = true;
+        //avatarMoveState = true;
+        print("333333");
         if (testPlus == true) {
           testDouble = 2;
           testPlus = false;
         }
-      } /*else {
-        Move.freemanPositionX = currentLandPosition + 125;
-        avatarMoveState = true;
-      }*/
-    } /*else {
-      testPlus = true;
-      testDouble = 0;
-    }*/
+      }
+    } else if (avatarMoveState == false &&
+        currentLandPosition + 150 > Move.freemanPositionX &&
+        Move.freemanPositionY == 135 &&
+        Move.freemanPositionY <
+            finalposition +
+                holePosition[indexHoleList - trick]['width']!.toInt() &&
+        Move.freemanPositionY + 25 >
+            finalposition +
+                holePosition[indexHoleList - trick]['width']!.toInt()) {
+      avatarMoveState = true;
+      if (landRightMove == false) {
+        Move.freemanPositionX = Move.freemanPositionX + testDouble;
+        // avatarMoveState = true;
+        if (testPlus == true) {
+          testDouble = 2;
+          testPlus = false;
+        }
+      } else if (landRightMove != false && avatarMoveState == true) {
+        Move.freemanPositionX = Move.freemanPositionX - testDouble;
+        //avatarMoveState = true;
+        if (testPlus == true) {
+          testDouble = 2;
+          testPlus = false;
+        }
+      }
+    } else {
+      avatarMoveState = false;
+    }
   }
 
   landToRight() {
@@ -371,6 +399,7 @@ class Move extends GetxController {
   }
 
   double avatarMoveBack = 0;
+
   avatarBackWithLand() {
     if (landState == true && avatarMoveState == true) {
       if (Move.freemanPositionY == 135 &&
