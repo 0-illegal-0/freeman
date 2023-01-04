@@ -295,9 +295,11 @@ class Move extends GetxController {
   String avatarState = "toRight";
 
   currentAvatarState() {
-    if (Move.freemanPositionX >
+    if (Move.freemanPositionX + 25 >
         holePosition[2]['margin-left']!.toInt() + 550 - Move.offsetX) {
       avatarState = "toLeft";
+    } else {
+      avatarState = "toRight";
     }
   }
 
@@ -316,53 +318,49 @@ class Move extends GetxController {
   }
 
   bool testPlus = true;
-  double testDouble = 0;
+  double testDouble = 2;
   avatarWithLand() {
     if (Move.freemanPositionY == 135 &&
         currentLandPosition < Move.freemanPositionX + 25 &&
-        currentLandPosition + 150 > Move.freemanPositionX) {
-      avatarMoveState = true;
-      if (/*avatarState == "toRight" &&*/ landRightMove == false) {
-        Move.freemanPositionX = Move.freemanPositionX + testDouble;
-        // avatarMoveState = true;
-        if (testPlus == true) {
-          testDouble = 2;
-          testPlus = false;
-        }
-      } else if (/*avatarState == "toRight" &&*/
-          landRightMove != false && avatarMoveState == true) {
-        Move.freemanPositionX = Move.freemanPositionX - testDouble;
-        //avatarMoveState = true;
-        print("333333");
-        if (testPlus == true) {
-          testDouble = 2;
-          testPlus = false;
-        }
-      }
-    } else if (avatarMoveState == false &&
         currentLandPosition + 150 > Move.freemanPositionX &&
-        Move.freemanPositionY == 135 &&
-        Move.freemanPositionY <
-            finalposition +
-                holePosition[indexHoleList - trick]['width']!.toInt() &&
-        Move.freemanPositionY + 25 >
-            finalposition +
-                holePosition[indexHoleList - trick]['width']!.toInt()) {
-      avatarMoveState = true;
+        avatarState == "toRight") {
+      print("big condation");
       if (landRightMove == false) {
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
-        // avatarMoveState = true;
-        if (testPlus == true) {
-          testDouble = 2;
-          testPlus = false;
-        }
-      } else if (landRightMove != false && avatarMoveState == true) {
+        print("right");
+        avatarMoveState = true;
+      } else if (landRightMove != false &&
+          avatarMoveState == true &&
+          horizontalLand < 394.0) {
         Move.freemanPositionX = Move.freemanPositionX - testDouble;
-        //avatarMoveState = true;
-        if (testPlus == true) {
-          testDouble = 2;
-          testPlus = false;
+        print("left $horizontalLand");
+      }
+    } else if (avatarMoveState == false) {
+      if (currentLandPosition + 150 > Move.freemanPositionX &&
+          Move.freemanPositionY == 135 &&
+          Move.freemanPositionX <
+              finalposition +
+                  holePosition[indexHoleList - trick]['width']!.toInt() &&
+          Move.freemanPositionX + 25 >
+              finalposition +
+                  holePosition[indexHoleList - trick]['width']!.toInt()) {
+        if (landRightMove == false && avatarMoveState == true) {
+          Move.freemanPositionX = Move.freemanPositionX + testDouble;
+        } else if (landRightMove != false) {
+          Move.freemanPositionX = Move.freemanPositionX - testDouble;
+
+          print("back  $horizontalLand");
+
+          avatarMoveState = true;
         }
+      }
+    } else if (avatarMoveState == true && Move.freemanPositionY == 135) {
+      print("......");
+      if (landRightMove == false && avatarMoveState == true) {
+        Move.freemanPositionX = Move.freemanPositionX + testDouble;
+      } else if (landRightMove != false && horizontalLand < 394.0) {
+        Move.freemanPositionX = Move.freemanPositionX - testDouble;
+        avatarMoveState = true;
       }
     } else {
       avatarMoveState = false;
