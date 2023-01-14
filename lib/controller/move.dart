@@ -237,10 +237,15 @@ class Move extends GetxController {
     double coinwidth = 0;
     await Future.delayed(const Duration(milliseconds: 10), () {
       for (var i = 0; i < currentCointCount; i++) {
-        if (Move.offsetX - coinwidth <
-                coins[coinCurrentIndex]['max-position'] &&
-            Move.offsetX - coinwidth >
-                coins[coinCurrentIndex]['min-position'] &&
+        if (Move.freemanPositionX <
+                coins[coinCurrentIndex]['left-position'] -
+                    Move.offsetX +
+                    35 +
+                    coinwidth &&
+            Move.freemanPositionX + 25 >
+                coins[coinCurrentIndex]['left-position'] +
+                    coinwidth -
+                    Move.offsetX &&
             freemanPositionY > 205 &&
             freemanPositionY < 265) {
           coinsColor[i + collectionIndexCount] = const Color(0xFFcacccb);
@@ -320,7 +325,7 @@ class Move extends GetxController {
   bool testPlus = true;
   double testDouble = 2;
   avatarWithLand() {
-    print("this is avatarMoveState $avatarMoveState");
+    //  print("this is avatarMoveState $avatarMoveState");
     if (avatarMoveState == false &&
         Move.freemanPositionY == 135 &&
         Move.freemanPositionX + 25 > currentLandPosition &&
@@ -329,7 +334,7 @@ class Move extends GetxController {
         Move.freemanPositionX <
             finalposition +
                 holePosition[indexHoleList - trick]['width']!.toInt()) {
-      print("+++4+++++");
+      //  print("+++4+++++");
       if (landRightMove == false) {
         avatarMoveState = true;
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
@@ -342,7 +347,7 @@ class Move extends GetxController {
         currentLandPosition + 150 > Move.freemanPositionX &&
         avatarState == "toRight") {
       if (landRightMove == false) {
-        print("...1....");
+        //   print("...1....");
         avatarMoveState = true;
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
       } else if (landRightMove != false &&
@@ -359,7 +364,7 @@ class Move extends GetxController {
         Move.freemanPositionX + 25 >
             finalposition +
                 holePosition[indexHoleList - trick]['width']!.toInt()) {
-      print("---2--");
+      //  print("---2--");
 
       if (landRightMove == false && avatarMoveState == true) {
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
@@ -368,7 +373,7 @@ class Move extends GetxController {
         avatarMoveState = true;
       }
     } else if (avatarMoveState == true && Move.freemanPositionY == 135) {
-      print("---3--");
+      //   print("---3--");
       if (landRightMove == false && avatarMoveState == true) {
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
       } else if (landRightMove != false && horizontalLand < 394.0) {
@@ -376,7 +381,7 @@ class Move extends GetxController {
         avatarMoveState = true;
       }
     } else {
-      print("+++else+++++");
+      //  print("+++else+++++");
       avatarMoveState = false;
     }
   }
