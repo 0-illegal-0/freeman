@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freeman/controller/move.dart';
+import 'package:freeman/sections/barrier.dart';
 import 'package:freeman/sections/moving_land.dart';
 import 'package:get/get.dart';
 //import 'dart:async';
@@ -72,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage>
                   leftPosition: Move.holePosition[index]['margin-left']!),
             )),
           ),*/
+          Barrier(offsetX: Move.offsetX),
           Coin(collectionCoins: coins),
           Positioned(
             bottom: Move.freemanPositionY,

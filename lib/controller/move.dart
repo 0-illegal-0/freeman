@@ -60,7 +60,9 @@ class Move extends GetxController {
     }
     checkFailState();
     await Future.delayed(const Duration(milliseconds: 1), () {
-      offsetX++;
+      if (barriers[0]['margin-left']! - offsetX != freemanPositionX + 25) {
+        offsetX++;
+      }
     });
     update();
   }
@@ -218,7 +220,7 @@ class Move extends GetxController {
         duration = 1000;
       }
     });
-    if (currentCointPositionX < 225 && currentCointPositionX > -100) {
+    if (currentCointPositionX < 710 && currentCointPositionX > -100) {
       coinEffect();
     } else {
       coinListener();
@@ -458,6 +460,8 @@ class Move extends GetxController {
     }
   }
 
+  //   ------------------------ Barrier -----------------------
+
   @override
   void onInit() async {
     coinListener();
@@ -493,5 +497,10 @@ const List coins = [
 
 const List<Map<String, double>> moveLands = [
   {'margin-left': 1204, 'effective-range': 1040},
+//  {'margin-left': 600},
+];
+
+const List<Map<String, double>> barriers = [
+  {'margin-left': 2050, 'height': 100, 'margin-bottom': 135},
 //  {'margin-left': 600},
 ];
