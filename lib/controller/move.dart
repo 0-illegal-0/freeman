@@ -50,6 +50,9 @@ class Move extends GetxController {
 
   int indexHoleList = 0;
   double finalposition = 0;
+  bool avatarWithBarrierState = false;
+
+  bool foreOne = true;
 
   forward() async {
     finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
@@ -59,12 +62,37 @@ class Move extends GetxController {
       indexHoleList++;
     }
     checkFailState();
-    await Future.delayed(const Duration(milliseconds: 1), () {
-      if (barriers[0]['margin-left']! - offsetX != freemanPositionX + 25) {
+    await Future.delayed(const Duration(milliseconds: 1), () async {
+      if (barriers[0]['margin-left']! - offsetX <= freemanPositionX + 25 &&
+          barriers[0]['margin-left']! - offsetX + 200 > freemanPositionX) {
+        if (freemanPositionY >= 235) {
+          offsetX++;
+          avatarWithBarrierState = true;
+          foreOne = true;
+        }
+      } else {
+        if (foreOne == true) {
+          await avatarMainBottomMargin();
+          foreOne = false;
+        }
+
+        //avatarWithBarrierState = false;
         offsetX++;
       }
     });
     update();
+  }
+
+  avatarMainBottomMargin() async {
+    if (freemanPositionY > 135 && avatarWithBarrierState == true) {
+      await Future.delayed(const Duration(milliseconds: 3), () {
+        freemanPositionY = freemanPositionY - 1;
+      });
+      avatarMainBottomMargin();
+      print("++++++ $freemanPositionY ++++++");
+    } else {
+      avatarWithBarrierState = false;
+    }
   }
 
   int trick = 0;
@@ -90,9 +118,22 @@ class Move extends GetxController {
         lastStageHole != true) {
       indexHoleList--;
     }
-    await Future.delayed(const Duration(milliseconds: 1), () {
-      offsetX--;
+    await Future.delayed(const Duration(milliseconds: 1), () async {
+      if (barriers[0]['margin-left']! - offsetX <= freemanPositionX + 25 &&
+          barriers[0]['margin-left']! - offsetX + 200 > freemanPositionX) {
+        if (freemanPositionY >= 235) {
+          offsetX--;
+          avatarWithBarrierState = true;
+        }
+      } else {
+        await avatarMainBottomMargin();
+        //avatarWithBarrierState = false;
+        offsetX--;
+      }
     });
+    /*   await Future.delayed(const Duration(milliseconds: 1), () {
+      offsetX--;
+    });*/
     update();
   }
 
@@ -117,12 +158,24 @@ class Move extends GetxController {
       if (jump == true && freemanPositionY++ < 290) {
         freemanPositionY++;
       } else {
+        print("+++235 jump +++");
         jump = false;
-        if (freemanPositionY > 135) {
-          freemanPositionY--;
+        if (avatarWithBarrierState == true) {
+          print("+++235 jump after +++");
+          if (freemanPositionY > 235) {
+            freemanPositionY--;
+          } else {
+            jump = true;
+            jumpComplete = true;
+          }
         } else {
-          jump = true;
-          jumpComplete = true;
+          print("+++135 jump +++");
+          if (freemanPositionY > 135) {
+            freemanPositionY--;
+          } else {
+            jump = true;
+            jumpComplete = true;
+          }
         }
       }
       update();
