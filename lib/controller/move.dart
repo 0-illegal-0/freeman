@@ -119,21 +119,21 @@ class Move extends GetxController {
       indexHoleList--;
     }
     await Future.delayed(const Duration(milliseconds: 1), () async {
-      if (barriers[0]['margin-left']! - offsetX <= freemanPositionX + 25 &&
-          barriers[0]['margin-left']! - offsetX + 200 > freemanPositionX) {
+      if (barriers[0]['margin-left']! - offsetX < freemanPositionX + 25 &&
+          barriers[0]['margin-left']! - offsetX + 200 >= freemanPositionX) {
         if (freemanPositionY >= 235) {
           offsetX--;
           avatarWithBarrierState = true;
+          foreOne = true;
         }
       } else {
-        await avatarMainBottomMargin();
-        //avatarWithBarrierState = false;
+        if (foreOne == true) {
+          await avatarMainBottomMargin();
+          foreOne = false;
+        }
         offsetX--;
       }
     });
-    /*   await Future.delayed(const Duration(milliseconds: 1), () {
-      offsetX--;
-    });*/
     update();
   }
 
