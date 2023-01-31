@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:freeman/main.dart';
@@ -24,9 +26,8 @@ class Move extends GetxController {
       }
     });
     if (forwod == true) {
-      toForward();
+      await toForward();
     }
-    //  print("This is OFFSET ++++++ $offsetX");
   }
 
   toBack() async {
@@ -50,9 +51,28 @@ class Move extends GetxController {
 
   int indexHoleList = 0;
   double finalposition = 0;
-  bool avatarWithBarrierState = false;
 
+  bool avatarWithBarrierState = false;
   bool foreOne = true;
+  int barierindex = 0;
+  double barierSafeArea = 50;
+
+  getCurrentBarriersIndex() {
+    if (barriers[barierindex]['margin-left']! -
+                offsetX +
+                barriers[barierindex]['width']! +
+                barierSafeArea <
+            freemanPositionX &&
+        barierindex < barriers.length - 1) {
+      barierindex++;
+    } else if (barriers[barierindex]['margin-left']! -
+                offsetX -
+                barierSafeArea >
+            freemanPositionX &&
+        barierindex > 0) {
+      barierindex--;
+    }
+  }
 
   forward() async {
     finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
@@ -62,6 +82,7 @@ class Move extends GetxController {
       indexHoleList++;
     }
     checkFailState();
+    getCurrentBarriersIndex();
     await Future.delayed(const Duration(milliseconds: 1), () async {
       if (barriers[0]['margin-left']! - offsetX <= freemanPositionX + 25 &&
           barriers[0]['margin-left']! - offsetX + 200 > freemanPositionX) {
@@ -75,24 +96,10 @@ class Move extends GetxController {
           await avatarMainBottomMargin();
           foreOne = false;
         }
-
-        //avatarWithBarrierState = false;
         offsetX++;
       }
     });
     update();
-  }
-
-  avatarMainBottomMargin() async {
-    if (freemanPositionY > 135 && avatarWithBarrierState == true) {
-      await Future.delayed(const Duration(milliseconds: 3), () {
-        freemanPositionY = freemanPositionY - 1;
-      });
-      avatarMainBottomMargin();
-      print("++++++ $freemanPositionY ++++++");
-    } else {
-      avatarWithBarrierState = false;
-    }
   }
 
   int trick = 0;
@@ -118,6 +125,7 @@ class Move extends GetxController {
         lastStageHole != true) {
       indexHoleList--;
     }
+    getCurrentBarriersIndex();
     await Future.delayed(const Duration(milliseconds: 1), () async {
       if (barriers[0]['margin-left']! - offsetX < freemanPositionX + 25 &&
           barriers[0]['margin-left']! - offsetX + 200 >= freemanPositionX) {
@@ -135,6 +143,18 @@ class Move extends GetxController {
       }
     });
     update();
+  }
+
+  avatarMainBottomMargin() async {
+    if (freemanPositionY > 135 && avatarWithBarrierState == true) {
+      await Future.delayed(const Duration(milliseconds: 3), () {
+        freemanPositionY = freemanPositionY - 1;
+      });
+      avatarMainBottomMargin();
+    } else {
+      avatarWithBarrierState = false;
+    }
+    print(avatarWithBarrierState);
   }
 
   bool fail = false;
@@ -158,10 +178,8 @@ class Move extends GetxController {
       if (jump == true && freemanPositionY++ < 290) {
         freemanPositionY++;
       } else {
-        print("+++235 jump +++");
         jump = false;
         if (avatarWithBarrierState == true) {
-          print("+++235 jump after +++");
           if (freemanPositionY > 235) {
             freemanPositionY--;
           } else {
@@ -169,9 +187,9 @@ class Move extends GetxController {
             jumpComplete = true;
           }
         } else {
-          print("+++135 jump +++");
           if (freemanPositionY > 135) {
             freemanPositionY--;
+            print("main drop");
           } else {
             jump = true;
             jumpComplete = true;
@@ -219,12 +237,6 @@ class Move extends GetxController {
                     finalposition +
                         holePosition[indexHoleList - trick]['width']!.toInt() &&
                 freemanPositionY == 135) {
-          print(
-              "this is holePosition ${holePosition[indexHoleList - trick]['width']!.toInt()}");
-          print("this is freemanPositionX $freemanPositionX");
-          print("this is currentLandPosition ${currentLandPosition}");
-          print("this is avatarMove $avatarMove");
-          print('This is drop');
           fail = true;
         }
       }
@@ -232,6 +244,11 @@ class Move extends GetxController {
   }
 
 //----------------------------- Coin ---------------------------
+
+  int get number0 {
+    return Random().nextInt(5) + 10;
+  }
+
   int coinCurrentIndex = 0;
   double get currentCointPositionX {
     return coins[coinCurrentIndex]['left-position'] - Move.offsetX;
@@ -345,7 +362,6 @@ class Move extends GetxController {
     if (moveLands[currentLandIndex]['effective-range']! - Move.offsetX >
         Move.freemanPositionX) {
       landState = false;
-      print("This is landState ++++++ $landState");
     }
   }
 
@@ -380,7 +396,6 @@ class Move extends GetxController {
   bool testPlus = true;
   double testDouble = 2;
   avatarWithLand() {
-    //  print("this is avatarMoveState $avatarMoveState");
     if (avatarMoveState == false &&
         Move.freemanPositionY == 135 &&
         Move.freemanPositionX + 25 > currentLandPosition &&
@@ -389,7 +404,6 @@ class Move extends GetxController {
         Move.freemanPositionX <
             finalposition +
                 holePosition[indexHoleList - trick]['width']!.toInt()) {
-      //  print("+++4+++++");
       if (landRightMove == false) {
         avatarMoveState = true;
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
@@ -402,7 +416,6 @@ class Move extends GetxController {
         currentLandPosition + 150 > Move.freemanPositionX &&
         avatarState == "toRight") {
       if (landRightMove == false) {
-        //   print("...1....");
         avatarMoveState = true;
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
       } else if (landRightMove != false &&
@@ -419,8 +432,6 @@ class Move extends GetxController {
         Move.freemanPositionX + 25 >
             finalposition +
                 holePosition[indexHoleList - trick]['width']!.toInt()) {
-      //  print("---2--");
-
       if (landRightMove == false && avatarMoveState == true) {
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
       } else if (landRightMove != false) {
@@ -428,7 +439,6 @@ class Move extends GetxController {
         avatarMoveState = true;
       }
     } else if (avatarMoveState == true && Move.freemanPositionY == 135) {
-      //   print("---3--");
       if (landRightMove == false && avatarMoveState == true) {
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
       } else if (landRightMove != false && horizontalLand < 394.0) {
@@ -436,7 +446,6 @@ class Move extends GetxController {
         avatarMoveState = true;
       }
     } else {
-      //  print("+++else+++++");
       avatarMoveState = false;
     }
   }
@@ -464,7 +473,6 @@ class Move extends GetxController {
     if (Move.freemanPositionX >
         finalposition + holePosition[indexHoleList - trick]['width']!.toInt()) {
       avatarMoveState = false;
-      print("33333");
     }
     if (landState == true) {
       if (Move.freemanPositionY == 135 &&
@@ -485,7 +493,6 @@ class Move extends GetxController {
     finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
     if (Move.freemanPositionX + 25 < finalposition) {
       avatarMoveState = false;
-      print("33333");
     }
     if (landState == true && avatarMoveState == true) {
       if (Move.freemanPositionY == 135 &&
@@ -512,8 +519,6 @@ class Move extends GetxController {
       avatarMove--;
     }
   }
-
-  //   ------------------------ Barrier -----------------------
 
   @override
   void onInit() async {
@@ -554,6 +559,12 @@ const List<Map<String, double>> moveLands = [
 ];
 
 const List<Map<String, double>> barriers = [
-  {'margin-left': 2050, 'height': 100, 'margin-bottom': 135},
+  {'margin-left': 2050, 'height': 100, 'margin-bottom': 135, 'width': 200},
+  {'margin-left': 2450, 'height': 100, 'margin-bottom': 135, 'width': 200},
+  {'margin-left': 2900, 'height': 100, 'margin-bottom': 135, 'width': 200}
 //  {'margin-left': 600},
+];
+
+const List fireBall = [
+  {'count': 12, 'height': 100, 'margin-bottom': 135, 'width': 200}
 ];

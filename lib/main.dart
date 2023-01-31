@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/sections/barrier.dart';
+import 'package:freeman/sections/fireball.dart';
 import 'package:freeman/sections/moving_land.dart';
 import 'package:get/get.dart';
 //import 'dart:async';
@@ -43,13 +45,15 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     Move moveController = Get.put(Move(), permanent: false);
+    FireBallController fireBallInstance =
+        Get.put(FireBallController(), permanent: false);
     print("This is width${width}");
-    return GetBuilder<Move>(builder: (context) {
-      return SizedBox(
-        width: 9940,
-        height: double.infinity,
-        child: Stack(children: [
-          Positioned(
+    return SizedBox(
+      width: 9940,
+      height: double.infinity,
+      child: Stack(children: [
+        GetBuilder<Move>(builder: (context) {
+          return Positioned(
             left: -Move.offsetX,
             bottom: 0,
             child: SizedBox(
@@ -60,10 +64,13 @@ class _MyHomePageState extends State<MyHomePage>
                 fit: BoxFit.cover,
               ),
             ),
-          ),
-          MovingLand(
-              offsetX: Move.offsetX, horizontalLand: Move.horizontalLand),
-          /* Transform.translate(
+          );
+        }),
+        GetBuilder<Move>(builder: (context) {
+          return MovingLand(
+              offsetX: Move.offsetX, horizontalLand: Move.horizontalLand);
+        }),
+        /* Transform.translate(
             offset: Offset(-Move.offsetX, 0),
             child: Stack(
                 children: List.generate(
@@ -73,9 +80,11 @@ class _MyHomePageState extends State<MyHomePage>
                   leftPosition: Move.holePosition[index]['margin-left']!),
             )),
           ),*/
-          Barrier(offsetX: Move.offsetX),
-          Coin(collectionCoins: coins),
-          Positioned(
+        GetBuilder<Move>(builder: (context) {
+          return Coin(collectionCoins: coins);
+        }),
+        GetBuilder<Move>(builder: (context) {
+          return Positioned(
             bottom: Move.freemanPositionY,
             left: Move.freemanPositionX,
             child: Container(
@@ -83,20 +92,28 @@ class _MyHomePageState extends State<MyHomePage>
               height: 25,
               color: const Color(0xFF850310),
             ),
-          ),
-          MoveButtons(moveController: moveController),
-          Positioned(
-            right: 20,
-            bottom: 20,
-            child: ElevatedButton(
-                onPressed: () {
-                  moveController.jumpAnime();
-                },
-                child: const Text("Jump")),
-          ),
-        ]),
-      );
-    });
+          );
+        }),
+        GetBuilder<FireBallController>(builder: (context) {
+          return FireBall(
+            moveDown: FireBallController.moveDown,
+            fireBallBotoomPosition: FireBallController.fireBallBotoomPosition,
+            fireBallCount: FireBallController.fireBallCount,
+            fireBallLeftPosition: FireBallController.fireBallLeftPosition,
+          );
+        }),
+        MoveButtons(moveController: moveController),
+        Positioned(
+          right: 20,
+          bottom: 20,
+          child: ElevatedButton(
+              onPressed: () {
+                moveController.jumpAnime();
+              },
+              child: const Text("Jump")),
+        ),
+      ]),
+    );
   }
 }
 

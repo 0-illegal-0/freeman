@@ -13,7 +13,7 @@ class Barrier extends StatelessWidget {
                   left: barriers[index]['margin-left']! - offsetX!,
                   bottom: barriers[index]['margin-bottom'],
                   child: Container(
-                    width: 200,
+                    width: barriers[index]['width'],
                     height: barriers[index]['height']!,
                     color: const Color(0xFF011c47),
                   ),
