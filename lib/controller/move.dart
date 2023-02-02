@@ -28,6 +28,7 @@ class Move extends GetxController {
     if (forwod == true) {
       await toForward();
     }
+    print("This is OffsetX" "${Move.offsetX}");
   }
 
   toBack() async {
@@ -84,20 +85,7 @@ class Move extends GetxController {
     checkFailState();
     getCurrentBarriersIndex();
     await Future.delayed(const Duration(milliseconds: 1), () async {
-      if (barriers[0]['margin-left']! - offsetX <= freemanPositionX + 25 &&
-          barriers[0]['margin-left']! - offsetX + 200 > freemanPositionX) {
-        if (freemanPositionY >= 235) {
-          offsetX++;
-          avatarWithBarrierState = true;
-          foreOne = true;
-        }
-      } else {
-        if (foreOne == true) {
-          await avatarMainBottomMargin();
-          foreOne = false;
-        }
-        offsetX++;
-      }
+      offsetX++;
     });
     update();
   }
@@ -127,20 +115,7 @@ class Move extends GetxController {
     }
     getCurrentBarriersIndex();
     await Future.delayed(const Duration(milliseconds: 1), () async {
-      if (barriers[0]['margin-left']! - offsetX < freemanPositionX + 25 &&
-          barriers[0]['margin-left']! - offsetX + 200 >= freemanPositionX) {
-        if (freemanPositionY >= 235) {
-          offsetX--;
-          avatarWithBarrierState = true;
-          foreOne = true;
-        }
-      } else {
-        if (foreOne == true) {
-          await avatarMainBottomMargin();
-          foreOne = false;
-        }
-        offsetX--;
-      }
+      offsetX--;
     });
     update();
   }
@@ -568,3 +543,83 @@ const List<Map<String, double>> barriers = [
 const List fireBall = [
   {'count': 12, 'height': 100, 'margin-bottom': 135, 'width': 200}
 ];
+
+
+
+
+
+
+/* barier functions
+
+  forward() async {
+    finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
+
+    if (finalposition < holePosition[indexHoleList]['minimum-margin']! &&
+        indexHoleList < holePosition.length - 1) {
+      indexHoleList++;
+    }
+    checkFailState();
+    getCurrentBarriersIndex();
+    await Future.delayed(const Duration(milliseconds: 1), () async {
+      if (barriers[0]['margin-left']! - offsetX <= freemanPositionX + 25 &&
+          barriers[0]['margin-left']! - offsetX + 200 > freemanPositionX) {
+        if (freemanPositionY >= 235) {
+          offsetX++;
+          avatarWithBarrierState = true;
+          foreOne = true;
+        }
+      } else {
+        if (foreOne == true) {
+          await avatarMainBottomMargin();
+          foreOne = false;
+        }
+        offsetX++;
+      }
+    });
+    update();
+  }
+
+  ------------------------------------------
+
+    goBack() async {
+    if (indexHoleList > 0 &&
+        indexHoleList < holePosition.length &&
+        holePosition[holePosition.length - 1]['margin-left']! - offsetX >
+            freemanPositionX) {
+      trick = 1;
+      lastStageHole = false;
+    } else {
+      lastStageHole = true;
+      trick = 0;
+    }
+
+    finalposition =
+        holePosition[indexHoleList - trick]['margin-left']! - offsetX;
+    checkFailState();
+
+    if (finalposition >= freemanPositionX &&
+        indexHoleList > 0 &&
+        lastStageHole != true) {
+      indexHoleList--;
+    }
+    getCurrentBarriersIndex();
+    await Future.delayed(const Duration(milliseconds: 1), () async {
+      if (barriers[0]['margin-left']! - offsetX < freemanPositionX + 25 &&
+          barriers[0]['margin-left']! - offsetX + 200 >= freemanPositionX) {
+        if (freemanPositionY >= 235) {
+          offsetX--;
+          avatarWithBarrierState = true;
+          foreOne = true;
+        }
+      } else {
+        if (foreOne == true) {
+          await avatarMainBottomMargin();
+          foreOne = false;
+        }
+        offsetX--;
+      }
+    });
+    update();
+  }
+
+*/

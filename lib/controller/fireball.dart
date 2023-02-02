@@ -12,8 +12,7 @@ class FireBallController extends GetxController {
   static const double fireBallHeight = 41;
   static const double fireBallwidth = 30;
   getRondomFireBallValues() {
-    // fireBallCount = Random().nextInt(5) + 10;
-    fireBallLeftPosition.add(Random().nextInt(700) + 100.0);
+    fireBallLeftPosition.add(Random().nextInt(700) + 2200.0);
     fireBallBotoomPosition.add(Random().nextInt(220) + 140.0);
     fireBallRondomValues++;
     if (fireBallRondomValues < fireBallCount) {
@@ -25,8 +24,9 @@ class FireBallController extends GetxController {
     if (fireBallBotoomPosition[fireBallIndex!] < Move.freemanPositionY + 35 &&
         fireBallBotoomPosition[fireBallIndex] + fireBallHeight >
             Move.freemanPositionY &&
-        fireBallLeftPosition[fireBallIndex] < Move.freemanPositionX + 35 &&
-        fireBallLeftPosition[fireBallIndex] + fireBallwidth >
+        fireBallLeftPosition[fireBallIndex] - Move.offsetX <
+            Move.freemanPositionX + 35 &&
+        fireBallLeftPosition[fireBallIndex] - Move.offsetX + fireBallwidth >
             Move.freemanPositionX) {
       print("FireBall  Touch Avatar");
     }
@@ -40,7 +40,7 @@ class FireBallController extends GetxController {
         fireBallBotoomPosition[i] = fireBallBotoomPosition[i] - 2;
         if (fireBallBotoomPosition[i] < 30) {
           fireBallBotoomPosition[i] = 370;
-          fireBallLeftPosition[i] = Random().nextInt(700) + 100.0;
+          fireBallLeftPosition[i] = Random().nextInt(700) + 2200.0;
         }
       }
     });

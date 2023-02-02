@@ -20,11 +20,9 @@ class FireBall extends StatelessWidget {
         children: List.generate(
             10,
             (index) => Positioned(
-                left: fireBallLeftPosition![index],
+                left: fireBallLeftPosition![index] - Move.offsetX,
                 bottom: fireBallBotoomPosition![index],
-                child: Image.asset(
-                  "assets/images/fire-icon/fireball.png",
-                  width: 30,
-                ))));
+                child: Image.asset("assets/images/fire-icon/fireball.png",
+                    width: 30))));
   }
 }
