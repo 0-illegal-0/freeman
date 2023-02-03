@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:freeman/controller/air_land_controller.dart';
 import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/move.dart';
+import 'package:freeman/sections/air_and.dart';
 import 'package:freeman/sections/barrier.dart';
 import 'package:freeman/sections/fireball.dart';
 import 'package:freeman/sections/moving_land.dart';
@@ -47,6 +49,8 @@ class _MyHomePageState extends State<MyHomePage>
     Move moveController = Get.put(Move(), permanent: false);
     FireBallController fireBallInstance =
         Get.put(FireBallController(), permanent: false);
+    AirLandController airLandController =
+        Get.put(AirLandController(), permanent: false);
     print("This is width${width}");
     return SizedBox(
       width: 9940,
@@ -70,16 +74,6 @@ class _MyHomePageState extends State<MyHomePage>
           return MovingLand(
               offsetX: Move.offsetX, horizontalLand: Move.horizontalLand);
         }),
-        /* Transform.translate(
-            offset: Offset(-Move.offsetX, 0),
-            child: Stack(
-                children: List.generate(
-              Move.holePosition.length,
-              (index) => Hole(
-                  holeWidth: Move.holePosition[index]['width'],
-                  leftPosition: Move.holePosition[index]['margin-left']!),
-            )),
-          ),*/
         GetBuilder<Move>(builder: (context) {
           return Coin(collectionCoins: coins);
         }),
@@ -102,7 +96,13 @@ class _MyHomePageState extends State<MyHomePage>
             fireBallLeftPosition: FireBallController.fireBallLeftPosition,
           );
         }),
-        MoveButtons(moveController: moveController),
+        GetBuilder<AirLandController>(builder: (context) {
+          return AirLand(offsetX: Move.offsetX);
+        }),
+        MoveButtons(
+          moveController: moveController,
+          airLandController: airLandController,
+        ),
         Positioned(
           right: 20,
           bottom: 20,
@@ -141,9 +141,11 @@ class MoveButtons extends StatelessWidget {
   const MoveButtons({
     Key? key,
     required this.moveController,
+    this.airLandController,
   }) : super(key: key);
 
   final Move moveController;
+  final AirLandController? airLandController;
 
   @override
   Widget build(BuildContext context) {

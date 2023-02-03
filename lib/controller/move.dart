@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:freeman/controller/air_land_controller.dart';
 import 'package:freeman/main.dart';
 import 'package:get/get.dart';
 
@@ -129,7 +130,6 @@ class Move extends GetxController {
     } else {
       avatarWithBarrierState = false;
     }
-    print(avatarWithBarrierState);
   }
 
   bool fail = false;
@@ -530,19 +530,14 @@ const List coins = [
 
 const List<Map<String, double>> moveLands = [
   {'margin-left': 1204, 'effective-range': 1040},
-//  {'margin-left': 600},
 ];
 
 const List<Map<String, double>> barriers = [
   {'margin-left': 2050, 'height': 100, 'margin-bottom': 135, 'width': 200},
   {'margin-left': 2450, 'height': 100, 'margin-bottom': 135, 'width': 200},
   {'margin-left': 2900, 'height': 100, 'margin-bottom': 135, 'width': 200}
-//  {'margin-left': 600},
 ];
 
-const List fireBall = [
-  {'count': 12, 'height': 100, 'margin-bottom': 135, 'width': 200}
-];
 
 
 
