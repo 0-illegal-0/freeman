@@ -13,7 +13,7 @@ class Move extends GetxController {
   static bool forwod = false;
   static bool back = false;
   static List<double> stagesWidth = [9940];
-  static double offsetX = 0;
+  static double offsetX = 0, offsetY = 0;
 
   toForward() async {
     await Future.delayed(const Duration(seconds: 0), () async {
@@ -57,24 +57,6 @@ class Move extends GetxController {
   bool avatarWithBarrierState = false;
   bool foreOne = true;
   int barierindex = 0;
-  double barierSafeArea = 50;
-
-  getCurrentBarriersIndex() {
-    if (barriers[barierindex]['margin-left']! -
-                offsetX +
-                barriers[barierindex]['width']! +
-                barierSafeArea <
-            freemanPositionX &&
-        barierindex < barriers.length - 1) {
-      barierindex++;
-    } else if (barriers[barierindex]['margin-left']! -
-                offsetX -
-                barierSafeArea >
-            freemanPositionX &&
-        barierindex > 0) {
-      barierindex--;
-    }
-  }
 
   forward() async {
     finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
@@ -84,7 +66,6 @@ class Move extends GetxController {
       indexHoleList++;
     }
     checkFailState();
-    getCurrentBarriersIndex();
     await Future.delayed(const Duration(milliseconds: 1), () async {
       offsetX++;
     });
@@ -114,7 +95,6 @@ class Move extends GetxController {
         lastStageHole != true) {
       indexHoleList--;
     }
-    getCurrentBarriersIndex();
     await Future.delayed(const Duration(milliseconds: 1), () async {
       offsetX--;
     });
@@ -154,17 +134,9 @@ class Move extends GetxController {
         freemanPositionY++;
       } else {
         jump = false;
-        if (avatarWithBarrierState == true) {
-          if (freemanPositionY > 235) {
+        {
+          if (freemanPositionY > AirLandController.mainSiteAvatare) {
             freemanPositionY--;
-          } else {
-            jump = true;
-            jumpComplete = true;
-          }
-        } else {
-          if (freemanPositionY > 135) {
-            freemanPositionY--;
-            print("main drop");
           } else {
             jump = true;
             jumpComplete = true;

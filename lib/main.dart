@@ -4,7 +4,6 @@ import 'package:freeman/controller/air_land_controller.dart';
 import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/sections/air_and.dart';
-import 'package:freeman/sections/barrier.dart';
 import 'package:freeman/sections/fireball.dart';
 import 'package:freeman/sections/moving_land.dart';
 import 'package:get/get.dart';
@@ -59,12 +58,12 @@ class _MyHomePageState extends State<MyHomePage>
         GetBuilder<Move>(builder: (context) {
           return Positioned(
             left: -Move.offsetX,
-            bottom: 0,
+            bottom: 0 - Move.offsetY,
             child: SizedBox(
               width: 9940,
-              height: 360,
+              height: 720,
               child: Image.asset(
-                "assets/images/land.png",
+                "assets/images/land-2.png",
                 fit: BoxFit.cover,
               ),
             ),
@@ -97,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage>
           );
         }),
         GetBuilder<AirLandController>(builder: (context) {
-          return AirLand(offsetX: Move.offsetX);
+          return AirLand(offsetX: Move.offsetX, offsetY: Move.offsetY);
         }),
         MoveButtons(
           moveController: moveController,
