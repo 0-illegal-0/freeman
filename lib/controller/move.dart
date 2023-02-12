@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:freeman/controller/air_land_controller.dart';
 import 'package:freeman/main.dart';
+import 'package:freeman/sections/air_and.dart';
 import 'package:get/get.dart';
 
 class Move extends GetxController {
@@ -130,13 +131,14 @@ class Move extends GetxController {
 
   jumpAnime() async {
     await Future.delayed(const Duration(milliseconds: 1), () {
-      if (jump == true && freemanPositionY++ < 290) {
+      if (jump == true && freemanPositionY++ - offsetY < 290) {
         freemanPositionY++;
       } else {
         jump = false;
         {
           if (freemanPositionY > AirLandController.mainSiteAvatare) {
             freemanPositionY--;
+            print(" -------------------- FAIL -------------------- ");
           } else {
             jump = true;
             jumpComplete = true;

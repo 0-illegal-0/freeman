@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage>
         }),
         GetBuilder<Move>(builder: (context) {
           return Positioned(
-            bottom: Move.freemanPositionY,
+            bottom: Move.freemanPositionY - Move.offsetY,
             left: Move.freemanPositionX,
             child: Container(
               width: 25,
@@ -111,6 +111,13 @@ class _MyHomePageState extends State<MyHomePage>
               },
               child: const Text("Jump")),
         ),
+        Positioned(
+            bottom: 133,
+            child: Container(
+              width: 360,
+              height: 2,
+              color: Colors.red,
+            ))
       ]),
     );
   }

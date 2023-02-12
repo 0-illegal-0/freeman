@@ -37,7 +37,15 @@ class AirLandController extends GetxController {
   static double get mainSiteAvatare {
     if (Move.freemanPositionX + 25 > airLandLeftPosition &&
         Move.freemanPositionX < airLandLeftPosition + airLandWidth) {
-      return airLandBottomPosition + 16 - Move.offsetY;
+      return airLandBottomPosition + 15;
+    } else if (Move.offsetY >= 233 &&
+        airLand[airLand.length - 1]['left-position'] +
+                airLand[airLand.length - 1]['width'] -
+                Move.offsetX <
+            Move.freemanPositionX + 25) {
+      print("DONE");
+
+      return 365;
     } else {
       return 135;
     }
@@ -45,7 +53,7 @@ class AirLandController extends GetxController {
 
   bool avatarOnAirLand = false;
   avatarWithairLandState() {
-    if (Move.freemanPositionY == airLandBottomPosition + 16 &&
+    if (Move.freemanPositionY == airLandBottomPosition + 15 &&
         Move.freemanPositionX + 25 > airLandLeftPosition &&
         Move.freemanPositionX < airLandLeftPosition + airLandWidth) {
       avatarOnAirLand = true;
@@ -54,10 +62,14 @@ class AirLandController extends GetxController {
 
   dropFromAirLand() async {
     avatarWithairLandState();
+    print("$avatarOnAirLand ................");
     if (avatarOnAirLand == true) {
       if (Move.freemanPositionX + 25 < airLandLeftPosition ||
-          Move.freemanPositionX > airLandLeftPosition + airLandWidth) {
-        print("+++++");
+          Move.freemanPositionX > airLandLeftPosition + airLandWidth ||
+          airLand[airLand.length - 1]['left-position'] +
+                  airLand[airLand.length - 1]['width'] -
+                  Move.offsetX >
+              Move.freemanPositionX) {
         dropFromAirLandAnimate();
       }
     }
@@ -65,8 +77,14 @@ class AirLandController extends GetxController {
 
   dropFromAirLandAnimate() async {
     await Future.delayed(const Duration(milliseconds: 1), () {
-      if (Move.freemanPositionY > mainSiteAvatare) {
-        print("------");
+      if (Move.freemanPositionY >
+              mainSiteAvatare /*||
+          Move.freemanPositionX >
+              airLand[airLand.length - 1]['left-position'] +
+                  airLand[airLand.length - 1]['width'] -
+                  Move.offsetX*/
+          ) {
+        print("fooo");
         Move.freemanPositionY--;
         dropFromAirLandAnimate();
         avatarOnAirLand = false;
@@ -96,10 +114,17 @@ class AirLandController extends GetxController {
   }
 
   refresh5() async {
+    print("offsetY ..... ${Move.offsetY}");
+    print(
+        " ${airLand[airLand.length - 1]['left-position'] + airLand[airLand.length - 1]['width'] - Move.offsetX} **** ${Move.freemanPositionX}");
+    print(
+        "airLandBottomPosition ${airLandBottomPosition + 15 - Move.offsetY} ------${Move.freemanPositionY - Move.offsetY} ");
+    print(
+        "offsetY ..... ${Move.freemanPositionY - Move.offsetY} +++ ${airLand[0]["bottom-position"] - Move.offsetY + 15}");
     dropFromAirLand();
-    drop();
+    //drop();
     getCurrentElementIndex(element: airLand);
-    //scopeScreen();
+    scopeScreen();
     await Future.delayed(const Duration(milliseconds: 10), () {
       if (Move.forwod == true) {
         update();
@@ -114,17 +139,57 @@ class AirLandController extends GetxController {
 
   scopeScreen() {
     if (Move.freemanPositionX + 25 >
-            airLand[0]['left-position'] - Move.offsetX &&
-        Move.freemanPositionX <
-            airLand[airLand.length - 1]['left-position'] -
-                Move.offsetX +
-                airLand[airLand.length - 1]['width']) {
-      print("object");
-      Move.offsetY = Move.freemanPositionY - 135;
+                airLand[0]['left-position'] - Move.offsetX &&
+            Move.freemanPositionX <
+                airLand[airLand.length - 1]['left-position'] -
+                    Move.offsetX +
+                    airLand[airLand.length - 1][
+                        'width'] /*&&
+        Move.freemanPositionY >= airLand[0]["bottom-position"] + 15*/
+        ) {
+      scopeScreenAnimeUp();
     } else {
-      Move.offsetY = 0;
+      scopeScreenAnimeDown();
     }
     update();
+  }
+
+  bool scopeForOneTime = true;
+  scopeScreenAnimeUp() async {
+    print("++++ ${110 * (elementIndex + 1)}");
+    if (Move.offsetY < 110 * (elementIndex + 1)) {
+      await Future.delayed(const Duration(milliseconds: 120), () {
+        if (Move.offsetY < 110 * (elementIndex + 1)) {
+          Move.offsetY++;
+        }
+        scopeScreenAnimeUp();
+      });
+    } else if (Move.offsetY > 110 * (elementIndex + 1)) {
+      await Future.delayed(const Duration(milliseconds: 120), () {
+        if (Move.offsetY > 110 * (elementIndex + 1)) {
+          Move.offsetY--;
+        }
+        scopeScreenAnimeUp();
+      });
+    }
+  }
+
+  bool mainFloor = true;
+  scopeScreenAnimeDown() async {
+    if (Move.offsetY > 233 &&
+        airLand[airLand.length - 1]['left-position'] +
+                airLand[airLand.length - 1]['width'] -
+                Move.offsetX <
+            Move.freemanPositionX + 25) {
+      await Future.delayed(const Duration(milliseconds: 10), () {
+        if (Move.offsetY > 233) {
+          mainFloor = false;
+          Move.offsetY = Move.offsetY - 3;
+        }
+      });
+    } else if (mainFloor == true) {
+      Move.offsetY = 0;
+    }
   }
 
   void onInit() {
