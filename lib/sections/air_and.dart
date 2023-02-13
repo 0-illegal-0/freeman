@@ -21,8 +21,8 @@ class AirLand extends StatelessWidget {
 }
 
 const List airLand = [
-  {"width": 250.0, "left-position": 3700.0, "bottom-position": 240.0},
-  {"width": 250.0, "left-position": 4050.0, "bottom-position": 340.0},
-  {"width": 250.0, "left-position": 4370.0, "bottom-position": 440.0},
-  {"width": 250.0, "left-position": 4750.0, "bottom-position": 540.0},
+  {"width": 250.0, "left-position": 3550.0, "bottom-position": 240.0},
+  {"width": 250.0, "left-position": 3900.0, "bottom-position": 340.0},
+  {"width": 250.0, "left-position": 4220.0, "bottom-position": 440.0},
+  {"width": 250.0, "left-position": 4540.0, "bottom-position": 540.0},
 ];

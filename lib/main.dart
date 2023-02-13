@@ -111,13 +111,6 @@ class _MyHomePageState extends State<MyHomePage>
               },
               child: const Text("Jump")),
         ),
-        Positioned(
-            bottom: 133,
-            child: Container(
-              width: 360,
-              height: 2,
-              color: Colors.red,
-            ))
       ]),
     );
   }
