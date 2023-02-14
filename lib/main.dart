@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const Scaffold(
-          backgroundColor: Color(0xFFcacccb), body: MyHomePage()),
+          backgroundColor: Color(0xFF3b5557), body: MyHomePage()),
     );
   }
 }
@@ -62,10 +62,7 @@ class _MyHomePageState extends State<MyHomePage>
             child: SizedBox(
               width: 9940,
               height: 720,
-              child: Image.asset(
-                "assets/images/land-2.png",
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset("assets/images/land-2.png", fit: BoxFit.cover),
             ),
           );
         }),

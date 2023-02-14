@@ -36,6 +36,7 @@ class AirLandController extends GetxController {
 
   static double get mainSiteAvatare {
     if (Move.freemanPositionX + 25 > airLandLeftPosition &&
+        Move.freemanPositionY >= airLandBottomPosition &&
         Move.freemanPositionX < airLandLeftPosition + airLandWidth &&
         mainFloor) {
       return airLandBottomPosition;
@@ -119,7 +120,7 @@ class AirLandController extends GetxController {
   refresh5() async {
     print("$mainSiteAvatare");
     dropFromAirLand();
-    // drop();
+    drop();
     getCurrentElementIndex(element: airLand);
     scopeScreen();
     await Future.delayed(const Duration(milliseconds: 10), () {
