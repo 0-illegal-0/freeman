@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:freeman/controller/air_land_controller.dart';
 import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/move.dart';
+import 'package:freeman/controller/rudder_controller.dart';
 import 'package:freeman/sections/air_and.dart';
 import 'package:freeman/sections/fireball.dart';
 import 'package:freeman/sections/moving_land.dart';
+import 'package:freeman/sections/rudder.dart';
 import 'package:get/get.dart';
 //import 'dart:async';
 
@@ -50,7 +52,8 @@ class _MyHomePageState extends State<MyHomePage>
         Get.put(FireBallController(), permanent: false);
     AirLandController airLandController =
         Get.put(AirLandController(), permanent: false);
-    print("This is width${width}");
+    RudderController rudderController =
+        Get.put(RudderController(), permanent: false);
     return SizedBox(
       width: 9940,
       height: double.infinity,
@@ -99,6 +102,9 @@ class _MyHomePageState extends State<MyHomePage>
           moveController: moveController,
           airLandController: airLandController,
         ),
+        GetBuilder<RudderController>(builder: (context) {
+          return Rudder(offsetX: Move.offsetX);
+        }),
         Positioned(
           right: 20,
           bottom: 20,

@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 // Important note there is bugg in getCurrentElementIndex function
 
 class AirLandController extends GetxController {
-  @override
   double elementSafeArea = 50;
 
   static int elementIndex = 0;
@@ -52,6 +51,7 @@ class AirLandController extends GetxController {
   }
 
   bool avatarOnAirLand = false;
+
   avatarWithairLandState() {
     if (Move.freemanPositionY == airLandBottomPosition &&
         Move.freemanPositionX + 25 > airLandLeftPosition &&
@@ -62,7 +62,6 @@ class AirLandController extends GetxController {
 
   dropFromAirLand() async {
     avatarWithairLandState();
-    print("$avatarOnAirLand ................");
     if (avatarOnAirLand == true) {
       if (Move.freemanPositionX + 25 < airLandLeftPosition ||
           Move.freemanPositionX > airLandLeftPosition + airLandWidth ||
@@ -77,14 +76,7 @@ class AirLandController extends GetxController {
 
   dropFromAirLandAnimate() async {
     await Future.delayed(const Duration(milliseconds: 1), () {
-      if (Move.freemanPositionY >
-              mainSiteAvatare /*||
-          Move.freemanPositionX >
-              airLand[airLand.length - 1]['left-position'] +
-                  airLand[airLand.length - 1]['width'] -
-                  Move.offsetX*/
-          ) {
-        print("fooo");
+      if (Move.freemanPositionY > mainSiteAvatare) {
         Move.freemanPositionY--;
         dropFromAirLandAnimate();
         avatarOnAirLand = false;
@@ -106,6 +98,7 @@ class AirLandController extends GetxController {
   }
 
   double secondFloorEdge = 4759;
+
   drop() async {
     if (Move.freemanPositionX > 3550.0 - Move.offsetX &&
             Move.freemanPositionY < airLand[0]['bottom-position'] ||
@@ -117,34 +110,13 @@ class AirLandController extends GetxController {
     }
   }
 
-  refresh5() async {
-    print("$mainSiteAvatare");
-    dropFromAirLand();
-    drop();
-    getCurrentElementIndex(element: airLand);
-    scopeScreen();
-    await Future.delayed(const Duration(milliseconds: 10), () {
-      if (Move.forwod == true) {
-        update();
-      }
-      if (Move.back == true) {
-        update();
-      }
-    });
-
-    refresh5();
-  }
-
   scopeScreen() {
     if (Move.freemanPositionX + 25 >
-                airLand[0]['left-position'] - Move.offsetX &&
-            Move.freemanPositionX <
-                airLand[airLand.length - 1]['left-position'] -
-                    Move.offsetX +
-                    airLand[airLand.length - 1][
-                        'width'] /*&&
-        Move.freemanPositionY >= airLand[0]["bottom-position"] + 15*/
-        ) {
+            airLand[0]['left-position'] - Move.offsetX &&
+        Move.freemanPositionX <
+            airLand[airLand.length - 1]['left-position'] -
+                Move.offsetX +
+                airLand[airLand.length - 1]['width']) {
       scopeScreenAnimeUp();
     } else {
       scopeScreenAnimeDown();
@@ -188,9 +160,24 @@ class AirLandController extends GetxController {
     }
   }
 
+  updateFunctions() async {
+    dropFromAirLand();
+    drop();
+    getCurrentElementIndex(element: airLand);
+    scopeScreen();
+    await Future.delayed(const Duration(milliseconds: 10), () {
+      if (Move.forwod == true) {
+        update();
+      }
+      if (Move.back == true) {
+        update();
+      }
+    });
+    updateFunctions();
+  }
+
   void onInit() {
-    refresh5();
-    // TODO: implement onInit
+    updateFunctions();
     super.onInit();
   }
 }
