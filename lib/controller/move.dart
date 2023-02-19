@@ -138,7 +138,6 @@ class Move extends GetxController {
         {
           if (freemanPositionY > AirLandController.mainSiteAvatare) {
             freemanPositionY--;
-            print(" -------------------- FAIL -------------------- ");
           } else {
             jump = true;
             jumpComplete = true;
@@ -295,10 +294,23 @@ class Move extends GetxController {
     Colors.green
   ];
 
-// ----------------------Move Land----------------------
+// ---------------------- Move Land ----------------------
 
   int checkLandDuration = 1000, currentLandIndex = 0;
   bool landState = false;
+
+  updateFreemanPosition() async {
+    if (freemanPositionX > 100) {
+      await Future.delayed(const Duration(milliseconds: 10), () {
+        freemanPositionX = freemanPositionX - 2;
+        if (freemanPositionX < 100) {
+          freemanPositionX = 100;
+        }
+      });
+      updateFreemanPosition();
+    }
+    update();
+  }
 
   forwardHorizontalLandeMove() {
     if (moveLands[currentLandIndex]['effective-range']! - Move.offsetX <
@@ -328,8 +340,15 @@ class Move extends GetxController {
     }
   }
 
+  int landNoveLoopDuration = 2000;
+  bool updateFreemanPositionForOnce = true;
   landNoveEffect() async {
-    await Future.delayed(const Duration(milliseconds: 10), () {
+    if (Move.offsetX > 500 && Move.offsetX < 5800) {
+      landNoveLoopDuration = 10;
+    } else {
+      landNoveLoopDuration = 2000;
+    }
+    await Future.delayed(Duration(milliseconds: landNoveLoopDuration), () {
       if (landRightMove == false) {
         landToRight();
         avatarWithLand();
@@ -338,6 +357,12 @@ class Move extends GetxController {
         landToleft();
       }
     });
+    if (offsetX > 1700) {
+      if (updateFreemanPositionForOnce == true) {
+        updateFreemanPositionForOnce = false;
+        updateFreemanPosition();
+      }
+    }
     landNoveEffect();
     update();
   }
@@ -481,6 +506,7 @@ const List<Map<String, double>> holePosition = [
   {'margin-left': 250, 'width': 70, 'minimum-margin': 55},
   {'margin-left': 600, 'width': 90, 'minimum-margin': 35},
   {'margin-left': 1200, 'width': 550, 'minimum-margin': -425},
+  // {'margin-left': 4540.0, 'width': 350, 'minimum-margin': -225},
 ];
 
 const List coins = [

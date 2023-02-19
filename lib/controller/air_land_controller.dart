@@ -160,7 +160,13 @@ class AirLandController extends GetxController {
     }
   }
 
+  int loopUpdateTime = 2000;
   updateFunctions() async {
+    if (Move.offsetX > 2500 && Move.offsetX < 6000) {
+      loopUpdateTime = 10;
+    } else {
+      loopUpdateTime = 2000;
+    }
     dropFromAirLand();
     drop();
     getCurrentElementIndex(element: airLand);

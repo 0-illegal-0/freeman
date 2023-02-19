@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freeman/controller/air_land_controller.dart';
+import 'package:freeman/controller/enemy_bird_controller.dart';
 import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/controller/rudder_controller.dart';
 import 'package:freeman/sections/air_and.dart';
+import 'package:freeman/sections/enemy_bird.dart';
 import 'package:freeman/sections/fireball.dart';
 import 'package:freeman/sections/moving_land.dart';
 import 'package:freeman/sections/rudder.dart';
@@ -54,6 +56,8 @@ class _MyHomePageState extends State<MyHomePage>
         Get.put(AirLandController(), permanent: false);
     RudderController rudderController =
         Get.put(RudderController(), permanent: false);
+    EnemyBirdContoller birdController =
+        Get.put(EnemyBirdContoller(), permanent: false);
     return SizedBox(
       width: 9940,
       height: double.infinity,
@@ -114,6 +118,21 @@ class _MyHomePageState extends State<MyHomePage>
               },
               child: const Text("Jump")),
         ),
+        GetBuilder<EnemyBirdContoller>(builder: (context) {
+          return EnemyBird(
+            cont: birdController,
+          );
+        })
+
+        /*  Positioned(
+          left: 4662 - Move.offsetX + 100,
+          bottom: 20,
+          child: ElevatedButton(
+              onPressed: () {
+                moveController.updateFreemanPosition();
+              },
+              child: const Text("rePosition")),
+        )*/
       ]),
     );
   }
