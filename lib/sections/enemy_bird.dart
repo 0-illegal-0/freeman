@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freeman/controller/enemy_bird_controller.dart';
+import 'package:freeman/controller/move.dart';
 
 class EnemyBird extends StatelessWidget {
   EnemyBird({Key? key, this.cont}) : super(key: key);
@@ -25,27 +26,44 @@ class Bird extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: enemyBirds[index!]['left.position'],
-      bottom: enemyBirds[index!]['bottom-position'],
+      left: enemyBirds[index!]['left-position'] -
+          cont.bombTopValues[index]['position-left'] -
+          Move.offsetX,
+      bottom: 0, //enemyBirds[index!]['bottom-position'],
       child: SizedBox(
-        height: 150,
-        child: Stack(alignment: AlignmentDirectional.center, children: [
+        height: 360,
+        width: 80,
+        child: Stack(children: [
           Positioned(
-            left: 33.333,
-            top: 82,
+              bottom: enemyBirds[index!]['bottom-position'] -
+                  cont.bombTopValues[index]['position-bottom'],
+              left: 35.0 + cont.bombTopValues[index]['position-left'],
+              child: Container(
+                width: 10,
+                height: 10,
+                color: Colors.yellow,
+                alignment: Alignment.center,
+              )),
+          Positioned(
+            left: 26.666,
+            //  top: 187,
+            bottom: enemyBirds[index!]['bottom-position'] - 50,
             child: Transform(
               transform: Matrix4.rotationY(0)..rotateX(cont.angle),
-              child: Image.asset("assets/images/wing.png", width: 26.6),
+              child: Image.asset("assets/images/wing.png", width: 22.0),
             ),
           ),
-          Positioned(child: Image.asset("assets/images/bird.png", width: 100)),
           Positioned(
-              left: 39,
-              top: 84,
+              bottom: enemyBirds[index!]['bottom-position'],
+              child: Image.asset("assets/images/bird.png", width: 80)),
+          Positioned(
+              left: 31.2,
+              // top: 187,
+              bottom: enemyBirds[index!]['bottom-position'] - 50,
               child: Transform(
                   transform: Matrix4.rotationY(0)..rotateX(cont.angle),
                   child: Image.asset("assets/images/wing-bottom.png",
-                      width: 26.6))),
+                      width: 22.0))),
         ]),
       ),
     );
@@ -53,7 +71,7 @@ class Bird extends StatelessWidget {
 }
 
 const List enemyBirds = [
-  {'left.position': 150.0, 'bottom-position': 220.0},
-  {'left.position': 300.0, 'bottom-position': 240.0},
-  {'left.position': 450.0, 'bottom-position': 200.0}
+  {'left-position': 100.0, 'bottom-position': 300.0},
+  {'left-position': 600.0, 'bottom-position': 310.0},
+  {'left-position': 800.0, 'bottom-position': 330.0}
 ];
