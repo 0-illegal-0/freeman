@@ -6,53 +6,54 @@ class EnemyBird extends StatelessWidget {
   dynamic cont;
   @override
   Widget build(BuildContext context) {
-    /* print("..00...${EnemyBirdContoller.wingState[0]}");
-    print("..11...${EnemyBirdContoller.wingState[1]}");
-    print("...22..${EnemyBirdContoller.wingState[2]}");
-    print("...33..${EnemyBirdContoller.wingState[3]}");**/
-    // EnemyBirdContoller().reInitializeWing();
+    return Stack(
+        children: List.generate(
+            enemyBirds.length, (index) => Bird(cont: cont, index: index)));
+  }
+}
+
+class Bird extends StatelessWidget {
+  const Bird({
+    Key? key,
+    required this.cont,
+    this.index,
+  }) : super(key: key);
+
+  final dynamic cont;
+  final int? index;
+
+  @override
+  Widget build(BuildContext context) {
     return Positioned(
-      left: 300,
-      bottom: 220,
-      child: Container(
-        //  color: Colors.green,
+      left: enemyBirds[index!]['left.position'],
+      bottom: enemyBirds[index!]['bottom-position'],
+      child: SizedBox(
         height: 150,
         child: Stack(alignment: AlignmentDirectional.center, children: [
           Positioned(
-              left: 33.333,
-              top: 80,
-              child: Image.asset("assets/images/wing.png",
-                  width: cont.wingState[0])),
-          Positioned(
-              child: Image.asset("assets/images/bird.png", width: 100
-                  // alignment: Alignment.center,
-                  )),
-          Positioned(
-              left: 39,
-              top: 17,
-              child: Image.asset("assets/images/wing-top.png",
-                  width: cont.wingState[3])),
+            left: 33.333,
+            top: 82,
+            child: Transform(
+              transform: Matrix4.rotationY(0)..rotateX(cont.angle),
+              child: Image.asset("assets/images/wing.png", width: 26.6),
+            ),
+          ),
+          Positioned(child: Image.asset("assets/images/bird.png", width: 100)),
           Positioned(
               left: 39,
-              top: 35,
-              child: Image.asset("assets/images/wing-top-2.png",
-                  width: cont.wingState[2])),
-          Positioned(
-              left: 39,
-              top: 80,
-              child: Image.asset("assets/images/wing-bootom-2.png",
-                  width: cont.wingState[1])),
-          Positioned(
-              left: 39,
-              top: 82,
-              child: Image.asset("assets/images/wing-bottom.png",
-                  width: cont.wingState[0])),
-          /*     Positioned(
-              left: 39,
-              top: 27.5,
-              child: Image.asset("assets/images/wing.png", width: 26.6))*/
+              top: 84,
+              child: Transform(
+                  transform: Matrix4.rotationY(0)..rotateX(cont.angle),
+                  child: Image.asset("assets/images/wing-bottom.png",
+                      width: 26.6))),
         ]),
       ),
     );
   }
 }
+
+const List enemyBirds = [
+  {'left.position': 150.0, 'bottom-position': 220.0},
+  {'left.position': 300.0, 'bottom-position': 240.0},
+  {'left.position': 450.0, 'bottom-position': 200.0}
+];

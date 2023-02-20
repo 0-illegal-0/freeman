@@ -4,37 +4,23 @@ import 'package:get/get.dart';
 class EnemyBirdContoller extends GetxController {
   List<double> wingState = [0, 0, 0, 0];
   int index = 0;
-  resetVal() {
-    for (var i = 0; i < wingState.length; i++) {
-      if (i == index) {
-        wingState[index] = 26.6;
+  double angle = 0.0;
+  bool wingAnimationSwitch = true;
+
+  wingAnimation() async {
+    await Future.delayed(const Duration(milliseconds: 20), () {
+      if (angle < 3.2 && wingAnimationSwitch == true) {
+        angle = angle + 0.2;
       } else {
-        wingState[i] = 0;
+        wingAnimationSwitch = false;
+        angle = angle - 0.2;
+        if (angle < 0) {
+          wingAnimationSwitch = true;
+        }
       }
-    }
-  }
-
-  reInitializeWing() async {
-    resetVal();
-    await Future.delayed(const Duration(milliseconds: 150), () {});
-    if (index > wingState.length - 2) {
-      index = 0;
-    } else {
-      index++;
-    }
-    reInitializeWing();
-    update();
-  }
-
-  priVal() async {
-    await Future.delayed(const Duration(milliseconds: 2000000), () {
-      print("0 ${wingState[0]}");
-      print("1 ${wingState[1]}");
-      print("2 ${wingState[2]}");
-      print("3 ${wingState[3]}");
-      print("index ${index}");
     });
-    priVal();
+    wingAnimation();
+    update();
   }
 
   updateFunctions() async {
@@ -51,10 +37,7 @@ class EnemyBirdContoller extends GetxController {
 
   @override
   void onInit() {
-    //  updateFunctions();
-    reInitializeWing();
-    priVal();
-    // TODO: implement onInit
+    wingAnimation();
     super.onInit();
   }
 }
