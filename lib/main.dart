@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freeman/controller/air_land_controller.dart';
+import 'package:freeman/controller/character_controller.dart';
 import 'package:freeman/controller/enemy_bird_controller.dart';
 import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/controller/rudder_controller.dart';
 import 'package:freeman/sections/air_and.dart';
+import 'package:freeman/sections/character.dart';
 import 'package:freeman/sections/enemy_bird.dart';
 import 'package:freeman/sections/fireball.dart';
 import 'package:freeman/sections/moving_land.dart';
@@ -58,6 +60,9 @@ class _MyHomePageState extends State<MyHomePage>
         Get.put(RudderController(), permanent: false);
     EnemyBirdContoller birdController =
         Get.put(EnemyBirdContoller(), permanent: false);
+
+    CharacterController characterController =
+        Get.put(CharacterController(), permanent: false);
     return SizedBox(
       width: 9940,
       height: double.infinity,
@@ -80,16 +85,18 @@ class _MyHomePageState extends State<MyHomePage>
         GetBuilder<Move>(builder: (context) {
           return Coin(collectionCoins: coins);
         }),
-        GetBuilder<Move>(builder: (context) {
+        GetBuilder<CharacterController>(builder: (context) {
           return Positioned(
-            bottom: Move.freemanPositionY - Move.offsetY,
-            left: Move.freemanPositionX,
-            child: Container(
+              bottom: Move.freemanPositionY - Move.offsetY,
+              left: Move.freemanPositionX,
+              child: Character(
+                  controll:
+                      characterController) /*Container(
               width: 25,
               height: 25,
               color: const Color(0xFF850310),
-            ),
-          );
+            ),*/
+              );
         }),
         GetBuilder<FireBallController>(builder: (context) {
           return FireBall(

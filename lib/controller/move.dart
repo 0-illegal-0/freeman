@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:freeman/controller/air_land_controller.dart';
+import 'package:freeman/controller/enemy_bird_controller.dart';
 import 'package:freeman/main.dart';
 import 'package:freeman/sections/air_and.dart';
 import 'package:get/get.dart';
@@ -128,8 +129,9 @@ class Move extends GetxController {
 
   bool jump = true;
   bool jumpComplete = false;
-
+  static bool jumpState = true;
   jumpAnime() async {
+    jumpState = false;
     await Future.delayed(const Duration(milliseconds: 1), () {
       if (jump == true && freemanPositionY++ - offsetY < 290) {
         freemanPositionY++;
@@ -149,6 +151,7 @@ class Move extends GetxController {
     if (jumpComplete == false) {
       jumpAnime();
     } else {
+      jumpState = true;
       jumpComplete = false;
       checkFailState();
       failAnimate();
@@ -500,13 +503,14 @@ class Move extends GetxController {
     landNoveEffect();
     super.onInit();
   }
+
+  static void moveBirdAnimation(int i) {}
 }
 
 const List<Map<String, double>> holePosition = [
   {'margin-left': 250, 'width': 70, 'minimum-margin': 55},
   {'margin-left': 600, 'width': 90, 'minimum-margin': 35},
   {'margin-left': 1200, 'width': 550, 'minimum-margin': -425},
-  // {'margin-left': 4540.0, 'width': 350, 'minimum-margin': -225},
 ];
 
 const List coins = [

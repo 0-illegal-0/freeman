@@ -39,7 +39,7 @@ class RudderController extends GetxController {
   angleUpdate({int? index}) async {
     await Future.delayed(const Duration(milliseconds: 50), () {
       if (angle < 6.2) {
-        angle = angle + 0.3;
+        angle = angle + 0.1;
       } else {
         angle = 0;
       }
@@ -51,7 +51,6 @@ class RudderController extends GetxController {
     if (rudderMove[index!] < northernEdge(index: index)) {
       angleUpdate(index: index);
     } else {
-      //  if (executeRudderFailForOnce == true) {
       executeRudderFailForOnce = false;
       rudderFail(index);
       /*  rudderFail(1);

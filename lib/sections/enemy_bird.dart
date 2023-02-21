@@ -29,15 +29,15 @@ class Bird extends StatelessWidget {
       left: enemyBirds[index!]['left-position'] -
           cont.bombTopValues[index]['position-left'] -
           Move.offsetX,
-      bottom: 0, //enemyBirds[index!]['bottom-position'],
+      bottom: 0,
       child: SizedBox(
         height: 360,
-        width: 80,
+        width: EnemyBirdContoller.birdWidth,
         child: Stack(children: [
           Positioned(
               bottom: enemyBirds[index!]['bottom-position'] -
                   cont.bombTopValues[index]['position-bottom'],
-              left: 35.0 + cont.bombTopValues[index]['position-left'],
+              left: 35.0,
               child: Container(
                 width: 10,
                 height: 10,
@@ -46,7 +46,6 @@ class Bird extends StatelessWidget {
               )),
           Positioned(
             left: 26.666,
-            //  top: 187,
             bottom: enemyBirds[index!]['bottom-position'] - 50,
             child: Transform(
               transform: Matrix4.rotationY(0)..rotateX(cont.angle),
@@ -58,7 +57,6 @@ class Bird extends StatelessWidget {
               child: Image.asset("assets/images/bird.png", width: 80)),
           Positioned(
               left: 31.2,
-              // top: 187,
               bottom: enemyBirds[index!]['bottom-position'] - 50,
               child: Transform(
                   transform: Matrix4.rotationY(0)..rotateX(cont.angle),
@@ -71,7 +69,9 @@ class Bird extends StatelessWidget {
 }
 
 const List enemyBirds = [
-  {'left-position': 100.0, 'bottom-position': 300.0},
-  {'left-position': 600.0, 'bottom-position': 310.0},
-  {'left-position': 800.0, 'bottom-position': 330.0}
+  {'left-position': 6600.0, 'bottom-position': 300.0},
+  {'left-position': 7000.0, 'bottom-position': 310.0},
+  {'left-position': 7400.0, 'bottom-position': 330.0},
+  {'left-position': 7600.0, 'bottom-position': 330.0},
+  {'left-position': 7700.0, 'bottom-position': 330.0}
 ];
