@@ -11,11 +11,9 @@ class Character extends StatelessWidget {
       height: 80,
       child: Stack(children: [
         Positioned(
-            //  left: 0,
             child: Image.asset("assets/images/character/stop.png",
                 width: controll.stopAnimeState)),
         Positioned(
-            //left: 200,
             child: Image.asset("assets/images/character/run-1.png"),
             width: controll.characterWidth[0]),
         Positioned(

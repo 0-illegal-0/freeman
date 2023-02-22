@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:freeman/controller/air_land_controller.dart';
+import 'package:freeman/controller/character_controller.dart';
 import 'package:freeman/controller/enemy_bird_controller.dart';
+import 'package:freeman/functions/function.dart';
 import 'package:freeman/main.dart';
 import 'package:freeman/sections/air_and.dart';
 import 'package:get/get.dart';
@@ -51,55 +53,44 @@ class Move extends GetxController {
   }
 
   static double freemanPositionY = 135;
-  static double freemanPositionX = 100;
+  static double freemanPositionX = 133;
 
-  int indexHoleList = 0;
-  double finalposition = 0;
+  //int indexHoleList = 0;
+  GetCurrentIndex getCurrentIndexInstance = GetCurrentIndex();
+  double get finalposition {
+    return holePosition[getCurrentIndexInstance.elementIndex]['margin-left']! -
+        offsetX;
+  }
 
   bool avatarWithBarrierState = false;
   bool foreOne = true;
   int barierindex = 0;
 
   forward() async {
-    finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
-
-    if (finalposition < holePosition[indexHoleList]['minimum-margin']! &&
-        indexHoleList < holePosition.length - 1) {
-      indexHoleList++;
-    }
+    getCurrentIndexInstance.getCurrentElementIndex(
+        element: holePosition,
+        elementLeftPosition: finalposition,
+        elementWidth: holePosition[getCurrentIndexInstance.elementIndex]
+            ['width']);
     checkFailState();
     await Future.delayed(const Duration(milliseconds: 1), () async {
       offsetX++;
     });
+    print("This is index ${getCurrentIndexInstance.elementIndex}");
     update();
   }
 
-  int trick = 0;
-  bool lastStageHole = false;
   goBack() async {
-    if (indexHoleList > 0 &&
-        indexHoleList < holePosition.length &&
-        holePosition[holePosition.length - 1]['margin-left']! - offsetX >
-            freemanPositionX) {
-      trick = 1;
-      lastStageHole = false;
-    } else {
-      lastStageHole = true;
-      trick = 0;
-    }
-
-    finalposition =
-        holePosition[indexHoleList - trick]['margin-left']! - offsetX;
+    getCurrentIndexInstance.getCurrentElementIndex(
+        element: holePosition,
+        elementLeftPosition: finalposition,
+        elementWidth: holePosition[getCurrentIndexInstance.elementIndex]
+            ['width']);
     checkFailState();
-
-    if (finalposition >= freemanPositionX &&
-        indexHoleList > 0 &&
-        lastStageHole != true) {
-      indexHoleList--;
-    }
     await Future.delayed(const Duration(milliseconds: 1), () async {
       offsetX--;
     });
+    print("This is index ${getCurrentIndexInstance.elementIndex}");
     update();
   }
 
@@ -159,13 +150,21 @@ class Move extends GetxController {
   }
 
   checkFailState() {
+    // print("finalposition ::::: $finalposition:::: ");
+    print(
+        "finalposition ::::: ${finalposition < freemanPositionX && finalposition > freemanPositionX - holePosition[getCurrentIndexInstance.elementIndex]['width']!.toInt() + CharacterController.characterMainWidth} ");
+
+    print(
+        "final2 ${finalposition < freemanPositionX && finalposition + holePosition[getCurrentIndexInstance.elementIndex]['width']!.toInt() > freemanPositionX + CharacterController.characterMainWidth}");
+
     if (landState == false) {
       if (fail == false) {
         if (finalposition < freemanPositionX &&
             finalposition >
                 freemanPositionX -
-                    holePosition[indexHoleList - trick]['width']!.toInt() +
-                    25 &&
+                    holePosition[getCurrentIndexInstance.elementIndex]['width']!
+                        .toInt() +
+                    CharacterController.characterMainWidth &&
             freemanPositionY == 135) {
           fail = true;
         }
@@ -175,18 +174,23 @@ class Move extends GetxController {
         if (freemanPositionX > finalposition &&
                 avatarMoveState != true &&
                 freemanPositionY == 135 &&
-                currentLandPosition > freemanPositionX + 25 &&
+                currentLandPosition >
+                    freemanPositionX + CharacterController.characterMainWidth &&
                 finalposition >
                     freemanPositionX -
-                        holePosition[indexHoleList - trick]['width']!.toInt() +
-                        25 ||
+                        holePosition[getCurrentIndexInstance.elementIndex]
+                                ['width']!
+                            .toInt() +
+                        CharacterController.characterMainWidth ||
             freemanPositionY == 139 &&
                 avatarMoveState == true &&
                 currentLandPosition > freemanPositionX + 25 ||
             freemanPositionX > currentLandPosition + 150 &&
-                freemanPositionX + 25 <
+                freemanPositionX + CharacterController.characterMainWidth <
                     finalposition +
-                        holePosition[indexHoleList - trick]['width']!.toInt() &&
+                        holePosition[getCurrentIndexInstance.elementIndex]
+                                ['width']!
+                            .toInt() &&
                 freemanPositionY == 135) {
           fail = true;
         }
@@ -265,7 +269,7 @@ class Move extends GetxController {
                     Move.offsetX +
                     35 +
                     coinwidth &&
-            Move.freemanPositionX + 25 >
+            Move.freemanPositionX + CharacterController.characterMainWidth >
                 coins[coinCurrentIndex]['left-position'] +
                     coinwidth -
                     Move.offsetX &&
@@ -335,7 +339,7 @@ class Move extends GetxController {
   String avatarState = "toRight";
 
   currentAvatarState() {
-    if (Move.freemanPositionX + 25 >
+    if (Move.freemanPositionX + CharacterController.characterMainWidth >
         holePosition[2]['margin-left']!.toInt() + 550 - Move.offsetX) {
       avatarState = "toLeft";
     } else {
@@ -375,12 +379,14 @@ class Move extends GetxController {
   avatarWithLand() {
     if (avatarMoveState == false &&
         Move.freemanPositionY == 135 &&
-        Move.freemanPositionX + 25 > currentLandPosition &&
+        Move.freemanPositionX + CharacterController.characterMainWidth >
+            currentLandPosition &&
         Move.freemanPositionX < currentLandPosition + 150 &&
         Move.freemanPositionX > finalposition &&
         Move.freemanPositionX <
             finalposition +
-                holePosition[indexHoleList - trick]['width']!.toInt()) {
+                holePosition[getCurrentIndexInstance.elementIndex]['width']!
+                    .toInt()) {
       if (landRightMove == false) {
         avatarMoveState = true;
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
@@ -389,7 +395,8 @@ class Move extends GetxController {
         avatarMoveState = true;
       }
     } else if (Move.freemanPositionY == 135 &&
-        currentLandPosition < Move.freemanPositionX + 25 &&
+        currentLandPosition <
+            Move.freemanPositionX + CharacterController.characterMainWidth &&
         currentLandPosition + 150 > Move.freemanPositionX &&
         avatarState == "toRight") {
       if (landRightMove == false) {
@@ -405,10 +412,12 @@ class Move extends GetxController {
         Move.freemanPositionY == 135 &&
         Move.freemanPositionX <
             finalposition +
-                holePosition[indexHoleList - trick]['width']!.toInt() &&
-        Move.freemanPositionX + 25 >
+                holePosition[getCurrentIndexInstance.elementIndex]['width']!
+                    .toInt() &&
+        Move.freemanPositionX + CharacterController.characterMainWidth >
             finalposition +
-                holePosition[indexHoleList - trick]['width']!.toInt()) {
+                holePosition[getCurrentIndexInstance.elementIndex]['width']!
+                    .toInt()) {
       if (landRightMove == false && avatarMoveState == true) {
         Move.freemanPositionX = Move.freemanPositionX + testDouble;
       } else if (landRightMove != false) {
@@ -446,15 +455,19 @@ class Move extends GetxController {
   }
 
   avatarForwardWithLand() {
-    finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
+    // finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
     if (Move.freemanPositionX >
-        finalposition + holePosition[indexHoleList - trick]['width']!.toInt()) {
+        finalposition +
+            holePosition[getCurrentIndexInstance.elementIndex]['width']!
+                .toInt()) {
       avatarMoveState = false;
     }
     if (landState == true) {
       if (Move.freemanPositionY == 135 &&
-          currentLandPosition < Move.freemanPositionX + 25 &&
-          currentLandPosition + 150 > Move.freemanPositionX + 25) {
+          currentLandPosition <
+              Move.freemanPositionX + CharacterController.characterMainWidth &&
+          currentLandPosition + 150 >
+              Move.freemanPositionX + CharacterController.characterMainWidth) {
         Move.freemanPositionX = Move.freemanPositionX + 1;
         avatarMoveState = true;
       } else {
@@ -467,13 +480,15 @@ class Move extends GetxController {
   double avatarMoveBack = 0;
 
   avatarBackWithLand() {
-    finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
-    if (Move.freemanPositionX + 25 < finalposition) {
+    // finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
+    if (Move.freemanPositionX + CharacterController.characterMainWidth <
+        finalposition) {
       avatarMoveState = false;
     }
     if (landState == true && avatarMoveState == true) {
       if (Move.freemanPositionY == 135 &&
-          currentLandPosition + 150 > Move.freemanPositionX + 25) {
+          currentLandPosition + 150 >
+              Move.freemanPositionX + CharacterController.characterMainWidth) {
         Move.freemanPositionX = Move.freemanPositionX - 1;
         avatarMoveState = true;
       } else {

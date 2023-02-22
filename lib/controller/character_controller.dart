@@ -6,7 +6,9 @@ class CharacterController extends GetxController {
   List<double> characterWidth = [0, 0, 0];
   double stopAnimeState = 80.0;
   double jumpeAnimeState = 0.0;
+  static const double characterMainWidth = 46.0;
   int index = 0;
+
   resetVal() {
     for (var i = 0; i < characterWidth.length; i++) {
       print("index :- $index");
@@ -30,10 +32,6 @@ class CharacterController extends GetxController {
 
     reInitializeWing();
     update();
-  }
-
-  double get poY {
-    return Move.freemanPositionY;
   }
 
   walkingAnimation() async {

@@ -72,9 +72,9 @@ class _MyHomePageState extends State<MyHomePage>
             left: -Move.offsetX,
             bottom: 0 - Move.offsetY,
             child: SizedBox(
-              width: 9940,
-              height: 720,
-              child: Image.asset("assets/images/land-2.png", fit: BoxFit.cover),
+              width: 720,
+              height: 360,
+              child: Image.asset("assets/images/cave.png", fit: BoxFit.cover),
             ),
           );
         }),
@@ -126,9 +126,19 @@ class _MyHomePageState extends State<MyHomePage>
               child: const Text("Jump")),
         ),
         GetBuilder<EnemyBirdContoller>(builder: (context) {
-          return EnemyBird(
-            cont: birdController,
-          );
+          return EnemyBird(cont: birdController);
+        }),
+        GetBuilder<Move>(builder: (context) {
+          return Positioned(
+              top: 170,
+              left: 150,
+              child: Container(width: 1, height: 50, color: Colors.red));
+        }),
+        GetBuilder<Move>(builder: (context) {
+          return Positioned(
+              top: 170,
+              left: 196,
+              child: Container(width: 1, height: 50, color: Colors.red));
         })
 
         /*  Positioned(

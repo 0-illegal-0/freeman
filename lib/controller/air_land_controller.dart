@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 class AirLandController extends GetxController {
   double elementSafeArea = 50;
-
   static int elementIndex = 0;
 
   static double get airLandLeftPosition {
