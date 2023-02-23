@@ -10,6 +10,7 @@ import 'package:freeman/sections/air_and.dart';
 import 'package:freeman/sections/character.dart';
 import 'package:freeman/sections/enemy_bird.dart';
 import 'package:freeman/sections/fireball.dart';
+import 'package:freeman/sections/hole.dart';
 import 'package:freeman/sections/moving_land.dart';
 import 'package:freeman/sections/rudder.dart';
 import 'package:get/get.dart';
@@ -67,17 +68,36 @@ class _MyHomePageState extends State<MyHomePage>
       width: 9940,
       height: double.infinity,
       child: Stack(children: [
+        Positioned(
+            child: Positioned(
+          left: 0,
+          child: SizedBox(
+            /* width: 720,
+            height: 225,*/
+            child: Image.asset(
+              "assets/images/cave.png",
+              fit: BoxFit.cover,
+            ),
+          ),
+        )),
         GetBuilder<Move>(builder: (context) {
           return Positioned(
             left: -Move.offsetX,
             bottom: 0 - Move.offsetY,
             child: SizedBox(
-              width: 720,
-              height: 360,
-              child: Image.asset("assets/images/cave.png", fit: BoxFit.cover),
+              width: 9940,
+              height: 720,
+              child: Image.asset("assets/images/main-background.png",
+                  fit: BoxFit.cover),
             ),
           );
         }),
+        /*  GetBuilder<Move>(builder: (context) {
+          return Hole(
+            offsetX: Move.offsetX,
+            offsetY: Move.offsetY,
+          );
+        }),*/
         GetBuilder<Move>(builder: (context) {
           return MovingLand(
               offsetX: Move.offsetX, horizontalLand: Move.horizontalLand);
@@ -155,6 +175,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
+/*
 class Hole extends StatelessWidget {
   const Hole({Key? key, this.leftPosition, this.holeWidth}) : super(key: key);
 
@@ -174,7 +195,7 @@ class Hole extends StatelessWidget {
     );
   }
 }
-
+*/
 class MoveButtons extends StatelessWidget {
   const MoveButtons({
     Key? key,

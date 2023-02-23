@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:freeman/controller/character_controller.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:get/get.dart';
 
@@ -25,7 +26,7 @@ class FireBallController extends GetxController {
         fireBallBotoomPosition[fireBallIndex] + fireBallHeight >
             Move.freemanPositionY &&
         fireBallLeftPosition[fireBallIndex] - Move.offsetX <
-            Move.freemanPositionX + 35 &&
+            Move.freemanPositionX + CharacterController.characterMainWidth &&
         fireBallLeftPosition[fireBallIndex] - Move.offsetX + fireBallwidth >
             Move.freemanPositionX) {
       print("FireBall  Touch Avatar");

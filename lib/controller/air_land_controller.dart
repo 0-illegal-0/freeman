@@ -1,3 +1,4 @@
+import 'package:freeman/controller/character_controller.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/sections/air_and.dart';
 import 'package:get/get.dart';
@@ -26,14 +27,15 @@ class AirLandController extends GetxController {
         elementIndex < element!.length - 1) {
       elementIndex++;
     } else if (airLandLeftPosition - elementSafeArea >
-            Move.freemanPositionX + 25 &&
+            Move.freemanPositionX + CharacterController.characterMainWidth &&
         elementIndex > 0) {
       elementIndex--;
     }
   }
 
   static double get mainSiteAvatare {
-    if (Move.freemanPositionX + 25 > airLandLeftPosition &&
+    if (Move.freemanPositionX + CharacterController.characterMainWidth >
+            airLandLeftPosition &&
         Move.freemanPositionY >= airLandBottomPosition &&
         Move.freemanPositionX < airLandLeftPosition + airLandWidth &&
         mainFloor) {
@@ -42,7 +44,7 @@ class AirLandController extends GetxController {
         airLand[airLand.length - 1]['left-position'] +
                 airLand[airLand.length - 1]['width'] -
                 Move.offsetX <
-            Move.freemanPositionX + 25) {
+            Move.freemanPositionX + CharacterController.characterMainWidth) {
       return 365;
     } else {
       return 135;
@@ -53,7 +55,8 @@ class AirLandController extends GetxController {
 
   avatarWithairLandState() {
     if (Move.freemanPositionY == airLandBottomPosition &&
-        Move.freemanPositionX + 25 > airLandLeftPosition &&
+        Move.freemanPositionX + CharacterController.characterMainWidth >
+            airLandLeftPosition &&
         Move.freemanPositionX < airLandLeftPosition + airLandWidth) {
       avatarOnAirLand = true;
     }
@@ -62,7 +65,8 @@ class AirLandController extends GetxController {
   dropFromAirLand() async {
     avatarWithairLandState();
     if (avatarOnAirLand == true) {
-      if (Move.freemanPositionX + 25 < airLandLeftPosition ||
+      if (Move.freemanPositionX + CharacterController.characterMainWidth <
+              airLandLeftPosition ||
           Move.freemanPositionX > airLandLeftPosition + airLandWidth ||
           airLand[airLand.length - 1]['left-position'] +
                   airLand[airLand.length - 1]['width'] -
@@ -102,7 +106,8 @@ class AirLandController extends GetxController {
     if (Move.freemanPositionX > 3550.0 - Move.offsetX &&
             Move.freemanPositionY < airLand[0]['bottom-position'] ||
         mainFloor == false &&
-            Move.freemanPositionX + 25 < secondFloorEdge - Move.offsetX &&
+            Move.freemanPositionX + CharacterController.characterMainWidth <
+                secondFloorEdge - Move.offsetX &&
             Move.freemanPositionY - Move.offsetY == mainSiteAvatare - 3) {
       fail = true;
       failAnimate();
@@ -110,7 +115,7 @@ class AirLandController extends GetxController {
   }
 
   scopeScreen() {
-    if (Move.freemanPositionX + 25 >
+    if (Move.freemanPositionX + CharacterController.characterMainWidth >
             airLand[0]['left-position'] - Move.offsetX &&
         Move.freemanPositionX <
             airLand[airLand.length - 1]['left-position'] -
@@ -147,7 +152,7 @@ class AirLandController extends GetxController {
         airLand[airLand.length - 1]['left-position'] +
                 airLand[airLand.length - 1]['width'] -
                 Move.offsetX <
-            Move.freemanPositionX + 25) {
+            Move.freemanPositionX + CharacterController.characterMainWidth) {
       await Future.delayed(const Duration(milliseconds: 10), () {
         if (Move.offsetY > 233) {
           mainFloor = false;

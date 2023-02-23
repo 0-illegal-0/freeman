@@ -16,10 +16,12 @@ class MovingLand extends StatelessWidget {
                     offsetX! +
                     horizontalLand!,
                 bottom: 120,
-                child: Container(
+                child: Image.asset(
+                    "assets/images/air-land.png") /*Container(
                   width: 150,
                   height: 15,
                   color: const Color(0xFF113b80),
-                ))));
+                )*/
+                )));
   }
 }

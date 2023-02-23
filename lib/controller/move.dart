@@ -8,6 +8,7 @@ import 'package:freeman/controller/enemy_bird_controller.dart';
 import 'package:freeman/functions/function.dart';
 import 'package:freeman/main.dart';
 import 'package:freeman/sections/air_and.dart';
+import 'package:freeman/sections/hole.dart';
 import 'package:get/get.dart';
 
 class Move extends GetxController {
@@ -76,7 +77,6 @@ class Move extends GetxController {
     await Future.delayed(const Duration(milliseconds: 1), () async {
       offsetX++;
     });
-    print("This is index ${getCurrentIndexInstance.elementIndex}");
     update();
   }
 
@@ -90,7 +90,6 @@ class Move extends GetxController {
     await Future.delayed(const Duration(milliseconds: 1), () async {
       offsetX--;
     });
-    print("This is index ${getCurrentIndexInstance.elementIndex}");
     update();
   }
 
@@ -121,6 +120,7 @@ class Move extends GetxController {
   bool jump = true;
   bool jumpComplete = false;
   static bool jumpState = true;
+
   jumpAnime() async {
     jumpState = false;
     await Future.delayed(const Duration(milliseconds: 1), () {
@@ -150,13 +150,6 @@ class Move extends GetxController {
   }
 
   checkFailState() {
-    // print("finalposition ::::: $finalposition:::: ");
-    print(
-        "finalposition ::::: ${finalposition < freemanPositionX && finalposition > freemanPositionX - holePosition[getCurrentIndexInstance.elementIndex]['width']!.toInt() + CharacterController.characterMainWidth} ");
-
-    print(
-        "final2 ${finalposition < freemanPositionX && finalposition + holePosition[getCurrentIndexInstance.elementIndex]['width']!.toInt() > freemanPositionX + CharacterController.characterMainWidth}");
-
     if (landState == false) {
       if (fail == false) {
         if (finalposition < freemanPositionX &&
@@ -184,7 +177,8 @@ class Move extends GetxController {
                         CharacterController.characterMainWidth ||
             freemanPositionY == 139 &&
                 avatarMoveState == true &&
-                currentLandPosition > freemanPositionX + 25 ||
+                currentLandPosition >
+                    freemanPositionX + CharacterController.characterMainWidth ||
             freemanPositionX > currentLandPosition + 150 &&
                 freemanPositionX + CharacterController.characterMainWidth <
                     finalposition +
@@ -455,7 +449,7 @@ class Move extends GetxController {
   }
 
   avatarForwardWithLand() {
-    // finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
+    //  finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
     if (Move.freemanPositionX >
         finalposition +
             holePosition[getCurrentIndexInstance.elementIndex]['width']!
@@ -480,7 +474,6 @@ class Move extends GetxController {
   double avatarMoveBack = 0;
 
   avatarBackWithLand() {
-    // finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
     if (Move.freemanPositionX + CharacterController.characterMainWidth <
         finalposition) {
       avatarMoveState = false;
@@ -488,6 +481,8 @@ class Move extends GetxController {
     if (landState == true && avatarMoveState == true) {
       if (Move.freemanPositionY == 135 &&
           currentLandPosition + 150 >
+              Move.freemanPositionX + CharacterController.characterMainWidth &&
+          currentLandPosition >
               Move.freemanPositionX + CharacterController.characterMainWidth) {
         Move.freemanPositionX = Move.freemanPositionX - 1;
         avatarMoveState = true;
@@ -521,12 +516,6 @@ class Move extends GetxController {
 
   static void moveBirdAnimation(int i) {}
 }
-
-const List<Map<String, double>> holePosition = [
-  {'margin-left': 250, 'width': 70, 'minimum-margin': 55},
-  {'margin-left': 600, 'width': 90, 'minimum-margin': 35},
-  {'margin-left': 1200, 'width': 550, 'minimum-margin': -425},
-];
 
 const List coins = [
   {

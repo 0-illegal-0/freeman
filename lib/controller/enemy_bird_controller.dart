@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:freeman/controller/character_controller.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/sections/enemy_bird.dart';
 import 'package:get/get.dart';
@@ -106,11 +107,14 @@ class EnemyBirdContoller extends GetxController {
             enemyBirdFinalBottomPosition(index) > avatarPositionY &&
             enemyBirdFinalLeftPosition(index) + 10 > Move.freemanPositionX &&
             enemyBirdFinalLeftPosition(index) + 10 <
-                Move.freemanPositionX + 25 ||
+                Move.freemanPositionX +
+                    CharacterController.characterMainWidth ||
         enemyBirdFinalBottomPosition(index) < avatarPositionY + 25 &&
             enemyBirdFinalBottomPosition(index) > avatarPositionY &&
             enemyBirdFinalLeftPosition(index) > Move.freemanPositionX &&
-            enemyBirdFinalLeftPosition(index) < Move.freemanPositionX + 25) {
+            enemyBirdFinalLeftPosition(index) <
+                Move.freemanPositionX +
+                    CharacterController.characterMainWidth) {
       print("You are killed $index");
     }
     update();
