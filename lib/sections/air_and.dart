@@ -12,11 +12,14 @@ class AirLand extends StatelessWidget {
             (index) => Positioned(
                 bottom: airLand[index]['bottom-position'] - offsetY,
                 left: airLand[index]['left-position'] - offsetX,
-                child: Container(
+                child: Image.asset("assets/images/fixed-air-land.png",
+                    width:
+                        250.0) /* Container(
                   width: airLand[index]['width'],
                   height: 15,
                   color: const Color(0xFF32a4a8),
-                ))));
+                ))*/
+                )));
   }
 }
 

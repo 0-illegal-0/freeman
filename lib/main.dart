@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freeman/controller/air_land_controller.dart';
 import 'package:freeman/controller/character_controller.dart';
+import 'package:freeman/controller/coins_controller.dart';
 import 'package:freeman/controller/enemy_bird_controller.dart';
 import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/controller/rudder_controller.dart';
 import 'package:freeman/sections/air_and.dart';
 import 'package:freeman/sections/character.dart';
+import 'package:freeman/sections/coins.dart';
 import 'package:freeman/sections/enemy_bird.dart';
 import 'package:freeman/sections/fireball.dart';
 import 'package:freeman/sections/hole.dart';
@@ -64,6 +66,9 @@ class _MyHomePageState extends State<MyHomePage>
 
     CharacterController characterController =
         Get.put(CharacterController(), permanent: false);
+
+    /*  CoinsController coinsController =
+        Get.put(CoinsController(), permanent: false);*/
     return SizedBox(
       width: 9940,
       height: double.infinity,
@@ -92,39 +97,22 @@ class _MyHomePageState extends State<MyHomePage>
             ),
           );
         }),
-        /*  GetBuilder<Move>(builder: (context) {
-          return Hole(
-            offsetX: Move.offsetX,
-            offsetY: Move.offsetY,
-          );
-        }),*/
         GetBuilder<Move>(builder: (context) {
           return MovingLand(
               offsetX: Move.offsetX, horizontalLand: Move.horizontalLand);
-        }),
-        GetBuilder<Move>(builder: (context) {
-          return Coin(collectionCoins: coins);
         }),
         GetBuilder<CharacterController>(builder: (context) {
           return Positioned(
               bottom: Move.freemanPositionY - Move.offsetY,
               left: Move.freemanPositionX,
-              child: Character(
-                  controll:
-                      characterController) /*Container(
-              width: 25,
-              height: 25,
-              color: const Color(0xFF850310),
-            ),*/
-              );
+              child: Character(controll: characterController));
         }),
         GetBuilder<FireBallController>(builder: (context) {
           return FireBall(
-            moveDown: FireBallController.moveDown,
-            fireBallBotoomPosition: FireBallController.fireBallBotoomPosition,
-            fireBallCount: FireBallController.fireBallCount,
-            fireBallLeftPosition: FireBallController.fireBallLeftPosition,
-          );
+              moveDown: FireBallController.moveDown,
+              fireBallBotoomPosition: FireBallController.fireBallBotoomPosition,
+              fireBallCount: FireBallController.fireBallCount,
+              fireBallLeftPosition: FireBallController.fireBallLeftPosition);
         }),
         GetBuilder<AirLandController>(builder: (context) {
           return AirLand(offsetX: Move.offsetX, offsetY: Move.offsetY);
@@ -135,6 +123,9 @@ class _MyHomePageState extends State<MyHomePage>
         ),
         GetBuilder<RudderController>(builder: (context) {
           return Rudder(offsetX: Move.offsetX);
+        }),
+        GetBuilder<Move>(builder: (context) {
+          return Coin(collectionCoins: coins, listdata: Move.coinswidthValues);
         }),
         Positioned(
           right: 20,
@@ -150,15 +141,15 @@ class _MyHomePageState extends State<MyHomePage>
         }),
         GetBuilder<Move>(builder: (context) {
           return Positioned(
-              top: 170,
+              top: 70,
               left: 150,
-              child: Container(width: 1, height: 50, color: Colors.red));
+              child: Container(width: 1, height: 150, color: Colors.red));
         }),
         GetBuilder<Move>(builder: (context) {
           return Positioned(
-              top: 170,
+              top: 70,
               left: 196,
-              child: Container(width: 1, height: 50, color: Colors.red));
+              child: Container(width: 1, height: 150, color: Colors.red));
         })
 
         /*  Positioned(
@@ -175,6 +166,43 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
+/*
+class Coin extends StatelessWidget {
+  Coin({Key? key, this.collectionCoins}) : super(key: key);
+  final List? collectionCoins;
+  @override
+  Widget build(BuildContext context) {
+    int counterIndex = -1;
+    return Stack(
+        children: List.generate(
+      collectionCoins!.length,
+      (collectionIndex) => Positioned(
+        //  duration: const Duration(milliseconds: 100),
+        left: collectionCoins![collectionIndex]["left-position"] - Move.offsetX,
+        bottom: collectionCoins![collectionIndex]["bottom-position"],
+        child: Row(
+            children: List.generate(
+          collectionCoins![collectionIndex]['count'],
+          (index) {
+            counterIndex++;
+            return SizedBox(
+              width: 35,
+              height: 35,
+              child: Center(
+                  child: Container(
+                      width: 25,
+                      height: 25,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Move.coinsColor[counterIndex]))),
+            );
+          },
+        )),
+      ),
+    ));
+  }
+}
+*/
 /*
 class Hole extends StatelessWidget {
   const Hole({Key? key, this.leftPosition, this.holeWidth}) : super(key: key);
@@ -232,41 +260,5 @@ class MoveButtons extends StatelessWidget {
               },
               child: const Icon(Icons.arrow_forward_ios_outlined)),
         ]));
-  }
-}
-
-class Coin extends StatelessWidget {
-  Coin({Key? key, this.collectionCoins}) : super(key: key);
-  final List? collectionCoins;
-  @override
-  Widget build(BuildContext context) {
-    int counterIndex = -1;
-    return Stack(
-        children: List.generate(
-      collectionCoins!.length,
-      (collectionIndex) => Positioned(
-        //  duration: const Duration(milliseconds: 100),
-        left: collectionCoins![collectionIndex]["left-position"] - Move.offsetX,
-        bottom: collectionCoins![collectionIndex]["bottom-position"],
-        child: Row(
-            children: List.generate(
-          collectionCoins![collectionIndex]['count'],
-          (index) {
-            counterIndex++;
-            return SizedBox(
-              width: 35,
-              height: 35,
-              child: Center(
-                  child: Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Move.coinsColor[counterIndex]))),
-            );
-          },
-        )),
-      ),
-    ));
   }
 }

@@ -193,7 +193,6 @@ class Move extends GetxController {
   }
 
 //----------------------------- Coin ---------------------------
-
   int get number0 {
     return Random().nextInt(5) + 10;
   }
@@ -254,24 +253,32 @@ class Move extends GetxController {
     }
   }
 
+  static const double coinRightGap = 10.0;
+  static const double coinLeftGap = 20.0;
+  static const double mainCoinWidth = 35.0;
   coinEffect() async {
     double coinwidth = 0;
+
     await Future.delayed(const Duration(milliseconds: 10), () {
       for (var i = 0; i < currentCointCount; i++) {
         if (Move.freemanPositionX <
                 coins[coinCurrentIndex]['left-position'] -
                     Move.offsetX +
-                    35 +
-                    coinwidth &&
+                    mainCoinWidth +
+                    coinwidth -
+                    coinRightGap &&
             Move.freemanPositionX + CharacterController.characterMainWidth >
                 coins[coinCurrentIndex]['left-position'] +
                     coinwidth -
-                    Move.offsetX &&
-            freemanPositionY > 205 &&
-            freemanPositionY < 265) {
-          coinsColor[i + collectionIndexCount] = const Color(0xFFcacccb);
+                    Move.offsetX -
+                    coinLeftGap &&
+            Move.freemanPositionY > 205 &&
+            Move.freemanPositionY < 265) {
+          coinswidthValues[i + collectionIndexCount] = 0.0;
+          // print(":::::::::::::");
+          print("::::: ${i + collectionIndexCount} :::::");
         }
-        coinwidth = coinwidth + 35;
+        coinwidth = coinwidth + mainCoinWidth;
       }
     });
     if (currentCointPositionX < 225 && currentCointPositionX > -100) {
@@ -279,21 +286,15 @@ class Move extends GetxController {
     } else {
       coinListener();
     }
+    update();
   }
 
-  static List<Color> coinsColor = [
-    Colors.green,
-    Colors.green,
-    Colors.green,
-    Colors.green,
-    Colors.green,
-    Colors.green,
-    Colors.green,
-    Colors.green,
-    Colors.green,
-    Colors.green,
-    Colors.green
-  ];
+  static List<double> coinswidthValues = [];
+  createCoinswidthValues() {
+    for (var i = 0; i < 999; i++) {
+      coinswidthValues.add(30.0);
+    }
+  }
 
 // ---------------------- Move Land ----------------------
 
@@ -509,6 +510,7 @@ class Move extends GetxController {
 
   @override
   void onInit() async {
+    createCoinswidthValues();
     coinListener();
     landNoveEffect();
     super.onInit();
@@ -516,6 +518,16 @@ class Move extends GetxController {
 
   static void moveBirdAnimation(int i) {}
 }
+
+const List<Map<String, double>> moveLands = [
+  {'margin-left': 1204, 'effective-range': 1040},
+];
+
+const List<Map<String, double>> barriers = [
+  {'margin-left': 2050, 'height': 100, 'margin-bottom': 135, 'width': 200},
+  {'margin-left': 2450, 'height': 100, 'margin-bottom': 135, 'width': 200},
+  {'margin-left': 2900, 'height': 100, 'margin-bottom': 135, 'width': 200}
+];
 
 const List coins = [
   {
@@ -533,21 +545,16 @@ const List coins = [
     "max-position": 1435.0,
     "min-position": 1375.0,
     "max-index-position": 1520.0
+  },
+  {
+    "count": 4,
+    "left-position": 2000.0,
+    "bottom-position": 230.0,
+    "max-position": 1435.0,
+    "min-position": 1375.0,
+    "max-index-position": 2020.0
   }
 ];
-
-const List<Map<String, double>> moveLands = [
-  {'margin-left': 1204, 'effective-range': 1040},
-];
-
-const List<Map<String, double>> barriers = [
-  {'margin-left': 2050, 'height': 100, 'margin-bottom': 135, 'width': 200},
-  {'margin-left': 2450, 'height': 100, 'margin-bottom': 135, 'width': 200},
-  {'margin-left': 2900, 'height': 100, 'margin-bottom': 135, 'width': 200}
-];
-
-
-
 
 
 
