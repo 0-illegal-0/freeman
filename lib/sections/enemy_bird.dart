@@ -38,12 +38,15 @@ class Bird extends StatelessWidget {
               bottom: enemyBirds[index!]['bottom-position'] -
                   cont.bombTopValues[index]['position-bottom'],
               left: 35.0,
-              child: Container(
+              child: Image.asset("assets/images/rocket-fire.png",
+                  width:
+                      10) /*Container(
                 width: 10,
                 height: 10,
                 color: Colors.yellow,
                 alignment: Alignment.center,
-              )),
+              )*/
+              ),
           Positioned(
             left: 26.666,
             bottom: enemyBirds[index!]['bottom-position'] - 50,

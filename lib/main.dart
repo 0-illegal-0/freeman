@@ -5,16 +5,22 @@ import 'package:freeman/controller/character_controller.dart';
 import 'package:freeman/controller/coins_controller.dart';
 import 'package:freeman/controller/enemy_bird_controller.dart';
 import 'package:freeman/controller/fireball.dart';
+import 'package:freeman/controller/important_note_controller.dart';
+import 'package:freeman/controller/loss_controller.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/controller/rudder_controller.dart';
+import 'package:freeman/controller/stones_controller.dart';
 import 'package:freeman/sections/air_and.dart';
 import 'package:freeman/sections/character.dart';
 import 'package:freeman/sections/coins.dart';
 import 'package:freeman/sections/enemy_bird.dart';
 import 'package:freeman/sections/fireball.dart';
 import 'package:freeman/sections/hole.dart';
+import 'package:freeman/sections/loss.dart';
 import 'package:freeman/sections/moving_land.dart';
 import 'package:freeman/sections/rudder.dart';
+import 'package:freeman/sections/stone.dart';
+import 'package:freeman/sections/top_bar.dart';
 import 'package:get/get.dart';
 //import 'dart:async';
 
@@ -54,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    Move moveController = Get.put(Move(), permanent: false);
+    Move moveController = Get.put(Move(width: width), permanent: false);
     FireBallController fireBallInstance =
         Get.put(FireBallController(), permanent: false);
     AirLandController airLandController =
@@ -67,13 +73,19 @@ class _MyHomePageState extends State<MyHomePage>
     CharacterController characterController =
         Get.put(CharacterController(), permanent: false);
 
-    /*  CoinsController coinsController =
-        Get.put(CoinsController(), permanent: false);*/
+    StonesController stoneController =
+        Get.put(StonesController(), permanent: false);
+
+    ImportantNoteController importantNoteController =
+        Get.put(ImportantNoteController(), permanent: false);
+
+    /*  FailedController failedController =
+        Get.put(FailedController(width: width), permanent: false);*/
     return SizedBox(
       width: 9940,
       height: double.infinity,
       child: Stack(children: [
-        Positioned(
+        /*   Positioned(
             child: Positioned(
           left: 0,
           child: SizedBox(
@@ -84,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage>
               fit: BoxFit.cover,
             ),
           ),
-        )),
+        )),*/
         GetBuilder<Move>(builder: (context) {
           return Positioned(
             left: -Move.offsetX,
@@ -105,7 +117,8 @@ class _MyHomePageState extends State<MyHomePage>
           return Positioned(
               bottom: Move.freemanPositionY - Move.offsetY,
               left: Move.freemanPositionX,
-              child: Character(controll: characterController));
+              child: Character(
+                  controll: characterController, rotateY: Move.charachterY));
         }),
         GetBuilder<FireBallController>(builder: (context) {
           return FireBall(
@@ -114,116 +127,84 @@ class _MyHomePageState extends State<MyHomePage>
               fireBallCount: FireBallController.fireBallCount,
               fireBallLeftPosition: FireBallController.fireBallLeftPosition);
         }),
+        GetBuilder<StonesController>(builder: (context) {
+          return Stone(
+              moveDown: StonesController.moveDown,
+              fireBallBotoomPosition: StonesController.fireBallBotoomPosition,
+              fireBallCount: StonesController.fireBallCount,
+              fireBallLeftPosition: StonesController.fireBallLeftPosition);
+        }),
         GetBuilder<AirLandController>(builder: (context) {
           return AirLand(offsetX: Move.offsetX, offsetY: Move.offsetY);
         }),
         MoveButtons(
-          moveController: moveController,
-          airLandController: airLandController,
-        ),
+            moveController: moveController,
+            airLandController: airLandController),
         GetBuilder<RudderController>(builder: (context) {
           return Rudder(offsetX: Move.offsetX);
         }),
         GetBuilder<Move>(builder: (context) {
-          return Coin(collectionCoins: coins, listdata: Move.coinswidthValues);
+          return Coin(
+              collectionCoins: coins,
+              listdata: Move.coinswidthValues,
+              offsetY: Move.offsetY);
+        }),
+        GetBuilder<Move>(builder: (context) {
+          return Loss(
+              posi: Move.leftLossPosition,
+              title: Move.rankStateTitle,
+              diamonCounter: moveController.diamondCounter);
+        }),
+        GetBuilder<Move>(builder: (context) {
+          return TopBar(controll: moveController, result: Move.result);
+        }),
+        GetBuilder<ImportantNoteController>(builder: (context) {
+          return ImportantNote(color: ImportantNoteController.color);
         }),
         Positioned(
           right: 20,
           bottom: 20,
-          child: ElevatedButton(
+          child: TextButton(
               onPressed: () {
                 moveController.jumpAnime();
               },
-              child: const Text("Jump")),
+              child: Container(
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromRGBO(172, 164, 177, 0.4)),
+                  child: Image.asset("assets/images/jump-button.png",
+                      width: 100))),
         ),
         GetBuilder<EnemyBirdContoller>(builder: (context) {
           return EnemyBird(cont: birdController);
         }),
-        GetBuilder<Move>(builder: (context) {
-          return Positioned(
-              top: 70,
-              left: 150,
-              child: Container(width: 1, height: 150, color: Colors.red));
-        }),
-        GetBuilder<Move>(builder: (context) {
-          return Positioned(
-              top: 70,
-              left: 196,
-              child: Container(width: 1, height: 150, color: Colors.red));
-        })
-
-        /*  Positioned(
-          left: 4662 - Move.offsetX + 100,
-          bottom: 20,
-          child: ElevatedButton(
-              onPressed: () {
-                moveController.updateFreemanPosition();
-              },
-              child: const Text("rePosition")),
-        )*/
       ]),
     );
   }
 }
 
-/*
-class Coin extends StatelessWidget {
-  Coin({Key? key, this.collectionCoins}) : super(key: key);
-  final List? collectionCoins;
+class ImportantNote extends StatelessWidget {
+  const ImportantNote({Key? key, this.color}) : super(key: key);
+  final Color? color;
   @override
   Widget build(BuildContext context) {
-    int counterIndex = -1;
-    return Stack(
-        children: List.generate(
-      collectionCoins!.length,
-      (collectionIndex) => Positioned(
-        //  duration: const Duration(milliseconds: 100),
-        left: collectionCoins![collectionIndex]["left-position"] - Move.offsetX,
-        bottom: collectionCoins![collectionIndex]["bottom-position"],
-        child: Row(
-            children: List.generate(
-          collectionCoins![collectionIndex]['count'],
-          (index) {
-            counterIndex++;
-            return SizedBox(
-              width: 35,
-              height: 35,
-              child: Center(
-                  child: Container(
-                      width: 25,
-                      height: 25,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Move.coinsColor[counterIndex]))),
-            );
-          },
-        )),
-      ),
-    ));
-  }
-}
-*/
-/*
-class Hole extends StatelessWidget {
-  const Hole({Key? key, this.leftPosition, this.holeWidth}) : super(key: key);
-
-  final double? leftPosition;
-  final double? holeWidth;
-  @override
-  Widget build(BuildContext context) {
+    // TODO: implement build
     return Positioned(
-      // duration: const Duration(seconds: 3),
-      bottom: 0,
-      left: leftPosition == null ? 600 : leftPosition,
+      bottom: 300,
+      right: 10,
       child: Container(
-        width: holeWidth,
-        height: 135,
-        color: const Color(0xFFcacccb),
+        width: 150,
+        height: 30,
+        color: ImportantNoteController.color,
+        child: Center(
+            child: Text(ImportantNoteController.note,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 16))),
       ),
     );
   }
 }
-*/
+
 class MoveButtons extends StatelessWidget {
   const MoveButtons({
     Key? key,
@@ -248,7 +229,13 @@ class MoveButtons extends StatelessWidget {
               onPanEnd: (details) {
                 Move.back = false;
               },
-              child: const Icon(Icons.arrow_back_ios_outlined)),
+              child: Container(
+                  padding: const EdgeInsets.all(17.5),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromRGBO(172, 164, 177, 0.4)),
+                  child:
+                      Image.asset("assets/images/left-button.png", width: 35))),
           const SizedBox(width: 40),
           GestureDetector(
               onPanStart: (details) {
@@ -258,7 +245,13 @@ class MoveButtons extends StatelessWidget {
               onPanEnd: (details) {
                 Move.forwod = false;
               },
-              child: const Icon(Icons.arrow_forward_ios_outlined)),
+              child: Container(
+                  padding: const EdgeInsets.all(17.5),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromRGBO(172, 164, 177, 0.4)),
+                  child: Image.asset("assets/images/right-button.png",
+                      width: 35))),
         ]));
   }
 }

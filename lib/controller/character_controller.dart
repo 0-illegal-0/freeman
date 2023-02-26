@@ -7,6 +7,7 @@ class CharacterController extends GetxController {
   double stopAnimeState = 80.0;
   double jumpeAnimeState = 0.0;
   static const double characterMainWidth = 46.0;
+  static const double characterMainHeight = 70.0;
   int index = 0;
 
   resetVal() {

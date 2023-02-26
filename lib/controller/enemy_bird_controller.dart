@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:freeman/controller/character_controller.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/sections/enemy_bird.dart';
@@ -84,7 +83,7 @@ class EnemyBirdContoller extends GetxController {
   }
 
   int birdAnimationDuration = 1500;
-
+  bool executeAnimateLossPosition = false;
   birdAttack(index) async {
     if (Move.offsetX > 5000 && Move.offsetX < 7000) {
       birdAnimationDuration = 10;
@@ -103,19 +102,39 @@ class EnemyBirdContoller extends GetxController {
       bombTopValues[index]['position-bottom'] = 0.0;
       birdAttack(index);
     }
-    if (enemyBirdFinalBottomPosition(index) < avatarPositionY + 25 &&
+    if (enemyBirdFinalBottomPosition(index) < avatarPositionY + 10 &&
             enemyBirdFinalBottomPosition(index) > avatarPositionY &&
             enemyBirdFinalLeftPosition(index) + 10 > Move.freemanPositionX &&
             enemyBirdFinalLeftPosition(index) + 10 <
                 Move.freemanPositionX +
                     CharacterController.characterMainWidth ||
-        enemyBirdFinalBottomPosition(index) < avatarPositionY + 25 &&
+        enemyBirdFinalBottomPosition(index) < avatarPositionY + 10 &&
             enemyBirdFinalBottomPosition(index) > avatarPositionY &&
             enemyBirdFinalLeftPosition(index) > Move.freemanPositionX &&
             enemyBirdFinalLeftPosition(index) <
                 Move.freemanPositionX +
                     CharacterController.characterMainWidth) {
-      print("You are killed $index");
+      Move.rankStateTitle = "Game Over";
+      Move.fail = true;
+      Move.result = 500;
+      if (executeAnimateLossPosition == false) {
+        executeAnimateLossPosition = true;
+        animateLossPosition();
+      }
+    }
+    update();
+  }
+
+  dynamic cont = Move(width: 720);
+  animateLossPosition() async {
+    print("+++++");
+    await Future.delayed(const Duration(milliseconds: 5), () {
+      Move.leftLossPosition = Move.leftLossPosition! + 5;
+    });
+    if (Move.leftLossPosition! < cont.width! * 0.67) {
+      print("....${Move.leftLossPosition}");
+
+      animateLossPosition();
     }
     update();
   }

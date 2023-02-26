@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/move.dart';
 
 class FireBall extends StatelessWidget {
@@ -18,7 +19,7 @@ class FireBall extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
         children: List.generate(
-            10,
+            FireBallController.fireBallCount,
             (index) => Positioned(
                 left: fireBallLeftPosition![index] - Move.offsetX,
                 bottom: fireBallBotoomPosition![index],

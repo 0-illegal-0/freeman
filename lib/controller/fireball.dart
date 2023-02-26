@@ -7,13 +7,13 @@ import 'package:get/get.dart';
 class FireBallController extends GetxController {
   static int moveDown = 0;
   static int fireBallRondomValues = 0;
-  static int fireBallCount = 13;
+  static int fireBallCount = 8;
   static List<double> fireBallLeftPosition = [];
   static List<double> fireBallBotoomPosition = [];
   static const double fireBallHeight = 41;
   static const double fireBallwidth = 30;
   getRondomFireBallValues() {
-    fireBallLeftPosition.add(Random().nextInt(700) + 2200.0);
+    fireBallLeftPosition.add(Random().nextInt(700) + 2500.0);
     fireBallBotoomPosition.add(Random().nextInt(220) + 140.0);
     fireBallRondomValues++;
     if (fireBallRondomValues < fireBallCount) {
@@ -21,16 +21,38 @@ class FireBallController extends GetxController {
     }
   }
 
+  bool executeAnimateLossPosition = false;
   whenFireBallTouchAvatar({int? fireBallIndex}) {
-    if (fireBallBotoomPosition[fireBallIndex!] < Move.freemanPositionY + 35 &&
+    if (fireBallBotoomPosition[fireBallIndex!] <
+            Move.freemanPositionY + CharacterController.characterMainHeight &&
         fireBallBotoomPosition[fireBallIndex] + fireBallHeight >
             Move.freemanPositionY &&
         fireBallLeftPosition[fireBallIndex] - Move.offsetX <
             Move.freemanPositionX + CharacterController.characterMainWidth &&
         fireBallLeftPosition[fireBallIndex] - Move.offsetX + fireBallwidth >
             Move.freemanPositionX) {
-      print("FireBall  Touch Avatar");
+      Move.rankStateTitle = "Game Over";
+      Move.fail = true;
+      Move.result = 500;
+      if (executeAnimateLossPosition == false) {
+        executeAnimateLossPosition = true;
+        animateLossPosition();
+      }
     }
+  }
+
+  dynamic cont = Move(width: 720);
+  animateLossPosition() async {
+    print("+++++");
+    await Future.delayed(const Duration(milliseconds: 5), () {
+      Move.leftLossPosition = Move.leftLossPosition! + 5;
+    });
+    if (Move.leftLossPosition! < cont.width! * 0.67) {
+      print("....${Move.leftLossPosition}");
+
+      animateLossPosition();
+    }
+    update();
   }
 
   fireBallAnimation() async {
@@ -41,7 +63,7 @@ class FireBallController extends GetxController {
         fireBallBotoomPosition[i] = fireBallBotoomPosition[i] - 2;
         if (fireBallBotoomPosition[i] < 30) {
           fireBallBotoomPosition[i] = 370;
-          fireBallLeftPosition[i] = Random().nextInt(700) + 2200.0;
+          fireBallLeftPosition[i] = Random().nextInt(700) + 2500.0;
         }
       }
     });

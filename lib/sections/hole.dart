@@ -22,5 +22,6 @@ const List<Map<String, double>> holePosition = [
   {'margin-left': 250, 'width': 100},
   {'margin-left': 600, 'width': 90},
   {'margin-left': 1200, 'width': 550},
+  // {'margin-left': 6500, 'width': 130},
   //{'margin-left': 1200, 'width': 550},
 ];

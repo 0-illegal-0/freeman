@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:freeman/controller/air_land_controller.dart';
 import 'package:freeman/controller/character_controller.dart';
 import 'package:freeman/controller/enemy_bird_controller.dart';
+import 'package:freeman/controller/loss_controller.dart';
 import 'package:freeman/functions/function.dart';
 import 'package:freeman/main.dart';
 import 'package:freeman/sections/air_and.dart';
@@ -12,15 +13,19 @@ import 'package:freeman/sections/hole.dart';
 import 'package:get/get.dart';
 
 class Move extends GetxController {
-  Move();
+  Move({this.width});
   double offsetMove = 0;
   static double surfaceMarginLeft = 0;
   static bool forwod = false;
   static bool back = false;
   static List<double> stagesWidth = [9940];
   static double offsetX = 0, offsetY = 0;
+  static double result = 0;
+  static double charachterY = 0;
 
   toForward() async {
+    charachterY = 0;
+    rankState();
     await Future.delayed(const Duration(seconds: 0), () async {
       forwardHorizontalLandeMove();
       currentAvatarState();
@@ -35,9 +40,12 @@ class Move extends GetxController {
       await toForward();
     }
     print("This is OffsetX" "${Move.offsetX}");
+    print("This is OffsetX" "${Move.offsetY}");
   }
 
   toBack() async {
+    charachterY = 3.15;
+    rankState();
     await Future.delayed(const Duration(seconds: 0), () async {
       backHorizontalLandeMove();
       currentAvatarState();
@@ -53,10 +61,22 @@ class Move extends GetxController {
     }
   }
 
+  int time = 500;
+  timer() async {
+    await Future.delayed(const Duration(seconds: 1), () {
+      time--;
+    });
+    if (time > 0) {
+      timer();
+    }
+    update();
+  }
+
   static double freemanPositionY = 135;
   static double freemanPositionX = 133;
 
   //int indexHoleList = 0;
+
   GetCurrentIndex getCurrentIndexInstance = GetCurrentIndex();
   double get finalposition {
     return holePosition[getCurrentIndexInstance.elementIndex]['margin-left']! -
@@ -104,7 +124,42 @@ class Move extends GetxController {
     }
   }
 
-  bool fail = false;
+  static bool fail = false;
+  static String rankStateTitle = "";
+  bool executeAnimateLossPosition = false;
+  //FailedController failedControllerInstance = FailedController(width: 720);
+  rankState() async {
+    if (fail == true) {
+      rankStateTitle = "Game Over";
+      result = 500;
+    } else {
+      rankStateTitle = "Win";
+    }
+    if (fail == true && executeAnimateLossPosition == false) {
+      print("Faiiiiiiiiiiil");
+      executeAnimateLossPosition = true;
+      animateLossPosition();
+    }
+    update();
+  }
+
+  final double? width;
+  //final bool? fail;
+  static double? leftLossPosition = 0;
+
+  animateLossPosition() async {
+    print("+++++");
+    await Future.delayed(const Duration(milliseconds: 5), () {
+      leftLossPosition = leftLossPosition! + 5;
+    });
+    if (leftLossPosition! < width! * 0.67) {
+      print("....$leftLossPosition");
+
+      animateLossPosition();
+    }
+    update();
+  }
+
   failAnimate() async {
     await Future.delayed(const Duration(milliseconds: 3), () {
       if (fail == true) {
@@ -124,12 +179,13 @@ class Move extends GetxController {
   jumpAnime() async {
     jumpState = false;
     await Future.delayed(const Duration(milliseconds: 1), () {
-      if (jump == true && freemanPositionY++ - offsetY < 290) {
+      if (jump == true && freemanPositionY++ - offsetY < 290 && fail == false) {
         freemanPositionY++;
       } else {
         jump = false;
         {
-          if (freemanPositionY > AirLandController.mainSiteAvatare) {
+          if (freemanPositionY > AirLandController.mainSiteAvatare &&
+              fail == false) {
             freemanPositionY--;
           } else {
             jump = true;
@@ -223,7 +279,7 @@ class Move extends GetxController {
         coinCurrentIndex < coins.length - 1) {
       coinCurrentIndex++;
     }
-    if (Move.offsetX < minIndexPosition) {
+    if (Move.offsetX < minIndexPosition && coinCurrentIndex > 0) {
       coinCurrentIndex--;
     }
   }
@@ -256,9 +312,19 @@ class Move extends GetxController {
   static const double coinRightGap = 10.0;
   static const double coinLeftGap = 20.0;
   static const double mainCoinWidth = 35.0;
+  int finalCurrentDiamondIndex = 0, diamondIndex = 0;
+  int diamondCounter = 0;
   coinEffect() async {
     double coinwidth = 0;
-
+    if (coinCurrentIndex > diamondIndex) {
+      finalCurrentDiamondIndex =
+          finalCurrentDiamondIndex + collectionIndexCount;
+      diamondIndex++;
+    } else if (coinCurrentIndex < diamondIndex) {
+      finalCurrentDiamondIndex =
+          finalCurrentDiamondIndex - coins[coinCurrentIndex]['count'] as int;
+      diamondIndex--;
+    }
     await Future.delayed(const Duration(milliseconds: 10), () {
       for (var i = 0; i < currentCointCount; i++) {
         if (Move.freemanPositionX <
@@ -272,11 +338,15 @@ class Move extends GetxController {
                     coinwidth -
                     Move.offsetX -
                     coinLeftGap &&
-            Move.freemanPositionY > 205 &&
-            Move.freemanPositionY < 265) {
-          coinswidthValues[i + collectionIndexCount] = 0.0;
-          // print(":::::::::::::");
-          print("::::: ${i + collectionIndexCount} :::::");
+            Move.freemanPositionY - offsetY >
+                coins[coinCurrentIndex]['bottom-position'] - 25 - offsetY &&
+            Move.freemanPositionY - offsetY <
+                coins[coinCurrentIndex]['bottom-position'] + 35 - offsetY) {
+          if (coinswidthValues[i + finalCurrentDiamondIndex] != 0.0) {
+            coinswidthValues[i + finalCurrentDiamondIndex] = 0.0;
+            diamondCounter++;
+            print("diamondCounter $diamondCounter");
+          }
         }
         coinwidth = coinwidth + mainCoinWidth;
       }
@@ -510,6 +580,7 @@ class Move extends GetxController {
 
   @override
   void onInit() async {
+    timer();
     createCoinswidthValues();
     coinListener();
     landNoveEffect();
@@ -533,7 +604,7 @@ const List coins = [
   {
     "count": 3,
     "left-position": 800.0,
-    "bottom-position": 230.0,
+    "bottom-position": 150.0,
     "max-position": 735.0,
     "min-position": 675.0,
     "max-index-position": 825.0
@@ -553,6 +624,30 @@ const List coins = [
     "max-position": 1435.0,
     "min-position": 1375.0,
     "max-index-position": 2020.0
+  },
+  {
+    "count": 4,
+    "left-position": 3000.0,
+    "bottom-position": 150.0,
+    "max-position": 1435.0,
+    "min-position": 1375.0,
+    "max-index-position": 3020.0
+  },
+  {
+    "count": 3,
+    "left-position": 5300.0,
+    "bottom-position": 466.0,
+    "max-position": 1435.0,
+    "min-position": 1375.0,
+    "max-index-position": 5320.0
+  },
+  {
+    "count": 5,
+    "left-position": 6300.0,
+    "bottom-position": 466.0,
+    "max-position": 1435.0,
+    "min-position": 1375.0,
+    "max-index-position": 6320.0
   }
 ];
 

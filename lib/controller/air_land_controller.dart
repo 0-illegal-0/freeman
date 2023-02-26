@@ -1,4 +1,5 @@
 import 'package:freeman/controller/character_controller.dart';
+import 'package:freeman/controller/loss_controller.dart';
 import 'package:freeman/controller/move.dart';
 import 'package:freeman/sections/air_and.dart';
 import 'package:get/get.dart';
@@ -101,6 +102,7 @@ class AirLandController extends GetxController {
   }
 
   double secondFloorEdge = 4759;
+  Move moveController = Move();
 
   drop() async {
     if (Move.freemanPositionX > 3550.0 - Move.offsetX &&
@@ -110,6 +112,7 @@ class AirLandController extends GetxController {
                 secondFloorEdge - Move.offsetX &&
             Move.freemanPositionY - Move.offsetY == mainSiteAvatare - 3) {
       fail = true;
+      //  moveController.fail = true;
       failAnimate();
     }
   }

@@ -3,9 +3,11 @@ import 'package:freeman/controller/coins_controller.dart';
 import 'package:freeman/controller/move.dart';
 
 class Coin extends StatelessWidget {
-  Coin({Key? key, this.collectionCoins, this.listdata}) : super(key: key);
+  Coin({Key? key, this.collectionCoins, this.listdata, this.offsetY})
+      : super(key: key);
   final List? collectionCoins;
   final List? listdata;
+  final double? offsetY;
   @override
   Widget build(BuildContext context) {
     int counterIndex = -1;
@@ -15,7 +17,7 @@ class Coin extends StatelessWidget {
       (collectionIndex) => Positioned(
         // duration: const Duration(milliseconds: 100),
         left: collectionCoins![collectionIndex]["left-position"] - Move.offsetX,
-        bottom: collectionCoins![collectionIndex]["bottom-position"],
+        bottom: collectionCoins![collectionIndex]["bottom-position"] - offsetY,
         child: Row(
             children: List.generate(
           collectionCoins![collectionIndex]['count'],
@@ -27,7 +29,7 @@ class Coin extends StatelessWidget {
                 child: Center(
                   child: /*Image.asset("assets/images/diamond.png",
                       fit: BoxFit.cover)**/
-                      Container(
+                      SizedBox(
                     width: listdata![counterIndex],
                     height: 30,
                     child: Image.asset("assets/images/diamond.png",

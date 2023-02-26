@@ -23,6 +23,7 @@ class RudderController extends GetxController {
     return (rudder[index]["left-position"]) - 4762 + rudderWidth;
   }
 
+  bool executeAnimateLossPosition = false;
   rudderAction({index}) {
     if (rudderPositionLeft(index: index) <= Move.freemanPositionX + 25 &&
             rudderPositionLeft(index: index) > Move.freemanPositionX &&
@@ -32,8 +33,28 @@ class RudderController extends GetxController {
             rudderPositionLeft(index: index) + rudderWidth <
                 Move.freemanPositionX + 25 &&
             Move.freemanPositionY - Move.offsetY < topRudder(index: index)) {
-      print("Rudder Action");
+      Move.rankStateTitle = "Game Over";
+      Move.fail = true;
+      Move.result = 500;
+      if (executeAnimateLossPosition == false) {
+        executeAnimateLossPosition = true;
+        animateLossPosition();
+      }
     }
+  }
+
+  dynamic cont = Move(width: 720);
+  animateLossPosition() async {
+    print("+++++");
+    await Future.delayed(const Duration(milliseconds: 5), () {
+      Move.leftLossPosition = Move.leftLossPosition! + 5;
+    });
+    if (Move.leftLossPosition! < cont.width! * 0.67) {
+      print("....${Move.leftLossPosition}");
+
+      animateLossPosition();
+    }
+    update();
   }
 
   angleUpdate({int? index}) async {
