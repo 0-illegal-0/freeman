@@ -188,7 +188,6 @@ class ImportantNote extends StatelessWidget {
   final Color? color;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Positioned(
       bottom: 300,
       right: 10,
