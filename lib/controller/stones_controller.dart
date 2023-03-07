@@ -45,13 +45,10 @@ class StonesController extends GetxController {
 
   dynamic cont = Move(width: 720);
   animateLossPosition() async {
-    print("+++++");
     await Future.delayed(const Duration(milliseconds: 5), () {
       Move.leftLossPosition = Move.leftLossPosition! + 5;
     });
     if (Move.leftLossPosition! < cont.width! * 0.67) {
-      print("....${Move.leftLossPosition}");
-
       animateLossPosition();
     }
     update();
@@ -76,7 +73,6 @@ class StonesController extends GetxController {
   @override
   void onInit() {
     fireBallAnimation();
-    // TODO: implement onInit
     super.onInit();
   }
 }

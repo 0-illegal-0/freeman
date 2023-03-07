@@ -6,7 +6,6 @@ class Character extends StatelessWidget {
   final double? rotateY;
   @override
   Widget build(BuildContext context) {
-    // controll.updateFunctions();
     return SizedBox(
       width: 80,
       height: 80,

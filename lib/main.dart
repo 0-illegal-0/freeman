@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freeman/controller/air_land_controller.dart';
 import 'package:freeman/controller/character_controller.dart';
-import 'package:freeman/controller/coins_controller.dart';
 import 'package:freeman/controller/enemy_bird_controller.dart';
 import 'package:freeman/controller/fireball.dart';
 import 'package:freeman/controller/important_note_controller.dart';
@@ -21,7 +20,11 @@ import 'package:freeman/sections/moving_land.dart';
 import 'package:freeman/sections/rudder.dart';
 import 'package:freeman/sections/stone.dart';
 import 'package:freeman/sections/top_bar.dart';
+import 'package:freeman/widget/button.dart';
 import 'package:get/get.dart';
+
+import 'sections/screen_size_note.dart';
+import 'widget/important_note.dart';
 //import 'dart:async';
 
 void main() {
@@ -39,6 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -60,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     Move moveController = Get.put(Move(width: width), permanent: false);
     FireBallController fireBallInstance =
         Get.put(FireBallController(), permanent: false);
@@ -79,24 +84,21 @@ class _MyHomePageState extends State<MyHomePage>
     ImportantNoteController importantNoteController =
         Get.put(ImportantNoteController(), permanent: false);
 
-    /*  FailedController failedController =
-        Get.put(FailedController(width: width), permanent: false);*/
+    print("This is height $height");
+    print("This is width $width");
     return SizedBox(
       width: 9940,
       height: double.infinity,
       child: Stack(children: [
-        /*   Positioned(
-            child: Positioned(
+        Positioned(
           left: 0,
           child: SizedBox(
-            /* width: 720,
-            height: 225,*/
             child: Image.asset(
               "assets/images/cave.png",
               fit: BoxFit.cover,
             ),
           ),
-        )),*/
+        ),
         GetBuilder<Move>(builder: (context) {
           return Positioned(
             left: -Move.offsetX,
@@ -112,13 +114,6 @@ class _MyHomePageState extends State<MyHomePage>
         GetBuilder<Move>(builder: (context) {
           return MovingLand(
               offsetX: Move.offsetX, horizontalLand: Move.horizontalLand);
-        }),
-        GetBuilder<CharacterController>(builder: (context) {
-          return Positioned(
-              bottom: Move.freemanPositionY - Move.offsetY,
-              left: Move.freemanPositionX,
-              child: Character(
-                  controll: characterController, rotateY: Move.charachterY));
         }),
         GetBuilder<FireBallController>(builder: (context) {
           return FireBall(
@@ -161,6 +156,13 @@ class _MyHomePageState extends State<MyHomePage>
         GetBuilder<ImportantNoteController>(builder: (context) {
           return ImportantNote(color: ImportantNoteController.color);
         }),
+        GetBuilder<CharacterController>(builder: (context) {
+          return Positioned(
+              bottom: Move.freemanPositionY - Move.offsetY,
+              left: Move.freemanPositionX,
+              child: Character(
+                  controll: characterController, rotateY: Move.charachterY));
+        }),
         Positioned(
           right: 20,
           bottom: 20,
@@ -178,79 +180,8 @@ class _MyHomePageState extends State<MyHomePage>
         GetBuilder<EnemyBirdContoller>(builder: (context) {
           return EnemyBird(cont: birdController);
         }),
+        ScreenSizeNote(width: width, height: height)
       ]),
     );
-  }
-}
-
-class ImportantNote extends StatelessWidget {
-  const ImportantNote({Key? key, this.color}) : super(key: key);
-  final Color? color;
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 300,
-      right: 10,
-      child: Container(
-        width: 150,
-        height: 30,
-        color: ImportantNoteController.color,
-        child: Center(
-            child: Text(ImportantNoteController.note,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 16))),
-      ),
-    );
-  }
-}
-
-class MoveButtons extends StatelessWidget {
-  const MoveButtons({
-    Key? key,
-    required this.moveController,
-    this.airLandController,
-  }) : super(key: key);
-
-  final Move moveController;
-  final AirLandController? airLandController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-        left: 50,
-        bottom: 20,
-        child: Row(children: [
-          GestureDetector(
-              onPanStart: (details) {
-                Move.back = true;
-                moveController.toBack();
-              },
-              onPanEnd: (details) {
-                Move.back = false;
-              },
-              child: Container(
-                  padding: const EdgeInsets.all(17.5),
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromRGBO(172, 164, 177, 0.4)),
-                  child:
-                      Image.asset("assets/images/left-button.png", width: 35))),
-          const SizedBox(width: 40),
-          GestureDetector(
-              onPanStart: (details) {
-                Move.forwod = true;
-                moveController.toForward();
-              },
-              onPanEnd: (details) {
-                Move.forwod = false;
-              },
-              child: Container(
-                  padding: const EdgeInsets.all(17.5),
-                  decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Color.fromRGBO(172, 164, 177, 0.4)),
-                  child: Image.asset("assets/images/right-button.png",
-                      width: 35))),
-        ]));
   }
 }

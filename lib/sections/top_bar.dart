@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/src/size_extension.dart';
 import 'package:freeman/controller/move.dart';
 
 class TopBar extends StatelessWidget {
@@ -8,8 +9,9 @@ class TopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Positioned(
-      bottom: 290 + result!,
+      bottom: height / 1.24 + result!,
       left: 18,
       child: Row(children: [
         SizedBox(

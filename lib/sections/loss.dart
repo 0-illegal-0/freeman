@@ -13,14 +13,14 @@ class Loss extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double lossWidth = width / 2.4;
     return Positioned(
-        right: width - posi!,
+        right: width - posi! - 20,
         top: lossWidth / 14.4,
         child: Stack(
           children: [
-            Image.asset("assets/images/design-5.png", width: lossWidth),
+            Image.asset("assets/images/game_ui.png", width: lossWidth),
             Positioned(
               left: width / 6.9,
-              top: width / 20.3,
+              top: width / 8,
               child: SizedBox(
                 width: 100,
                 child: Center(
@@ -35,7 +35,7 @@ class Loss extends StatelessWidget {
             ),
             Positioned(
               left: width / 6.0,
-              top: width / 3.25,
+              top: width / 4.0,
               child: SizedBox(
                 width: 70,
                 child: Center(

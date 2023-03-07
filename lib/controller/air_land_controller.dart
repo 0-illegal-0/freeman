@@ -84,11 +84,19 @@ class AirLandController extends GetxController {
         Move.freemanPositionY--;
         dropFromAirLandAnimate();
         avatarOnAirLand = false;
+        Move.rankStateTitle = "Game Over";
+        Move.fail = true;
+        Move.result = 500;
+        if (executeAnimateLossPosition == false) {
+          executeAnimateLossPosition = true;
+          animateLossPosition();
+        }
       }
     });
   }
 
   bool fail = false;
+  bool executeAnimateLossPosition = false;
   failAnimate() async {
     await Future.delayed(const Duration(milliseconds: 3), () {
       if (fail == true) {
@@ -97,6 +105,24 @@ class AirLandController extends GetxController {
     });
     if (Move.freemanPositionY > -25 && fail == true) {
       failAnimate();
+      Move.rankStateTitle = "Game Over";
+      Move.fail = true;
+      Move.result = 500;
+      if (executeAnimateLossPosition == false) {
+        executeAnimateLossPosition = true;
+        animateLossPosition();
+      }
+    }
+    update();
+  }
+
+  dynamic cont = Move(width: 720);
+  animateLossPosition() async {
+    await Future.delayed(const Duration(milliseconds: 5), () {
+      Move.leftLossPosition = Move.leftLossPosition! + 5;
+    });
+    if (Move.leftLossPosition! < cont.width! * 0.67) {
+      animateLossPosition();
     }
     update();
   }

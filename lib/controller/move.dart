@@ -39,8 +39,6 @@ class Move extends GetxController {
     if (forwod == true) {
       await toForward();
     }
-    print("This is OffsetX" "${Move.offsetX}");
-    print("This is OffsetX" "${Move.offsetY}");
   }
 
   toBack() async {
@@ -136,7 +134,6 @@ class Move extends GetxController {
       rankStateTitle = "Win";
     }
     if (fail == true && executeAnimateLossPosition == false) {
-      print("Faiiiiiiiiiiil");
       executeAnimateLossPosition = true;
       animateLossPosition();
     }
@@ -148,13 +145,10 @@ class Move extends GetxController {
   static double? leftLossPosition = 0;
 
   animateLossPosition() async {
-    print("+++++");
     await Future.delayed(const Duration(milliseconds: 5), () {
       leftLossPosition = leftLossPosition! + 5;
     });
     if (leftLossPosition! < width! * 0.67) {
-      print("....$leftLossPosition");
-
       animateLossPosition();
     }
     update();
@@ -345,7 +339,6 @@ class Move extends GetxController {
           if (coinswidthValues[i + finalCurrentDiamondIndex] != 0.0) {
             coinswidthValues[i + finalCurrentDiamondIndex] = 0.0;
             diamondCounter++;
-            print("diamondCounter $diamondCounter");
           }
         }
         coinwidth = coinwidth + mainCoinWidth;
@@ -586,8 +579,6 @@ class Move extends GetxController {
     landNoveEffect();
     super.onInit();
   }
-
-  static void moveBirdAnimation(int i) {}
 }
 
 const List<Map<String, double>> moveLands = [
@@ -650,81 +641,3 @@ const List coins = [
     "max-index-position": 6320.0
   }
 ];
-
-
-
-
-/* barier functions
-
-  forward() async {
-    finalposition = holePosition[indexHoleList]['margin-left']! - offsetX;
-
-    if (finalposition < holePosition[indexHoleList]['minimum-margin']! &&
-        indexHoleList < holePosition.length - 1) {
-      indexHoleList++;
-    }
-    checkFailState();
-    getCurrentBarriersIndex();
-    await Future.delayed(const Duration(milliseconds: 1), () async {
-      if (barriers[0]['margin-left']! - offsetX <= freemanPositionX + 25 &&
-          barriers[0]['margin-left']! - offsetX + 200 > freemanPositionX) {
-        if (freemanPositionY >= 235) {
-          offsetX++;
-          avatarWithBarrierState = true;
-          foreOne = true;
-        }
-      } else {
-        if (foreOne == true) {
-          await avatarMainBottomMargin();
-          foreOne = false;
-        }
-        offsetX++;
-      }
-    });
-    update();
-  }
-
-  ------------------------------------------
-
-    goBack() async {
-    if (indexHoleList > 0 &&
-        indexHoleList < holePosition.length &&
-        holePosition[holePosition.length - 1]['margin-left']! - offsetX >
-            freemanPositionX) {
-      trick = 1;
-      lastStageHole = false;
-    } else {
-      lastStageHole = true;
-      trick = 0;
-    }
-
-    finalposition =
-        holePosition[indexHoleList - trick]['margin-left']! - offsetX;
-    checkFailState();
-
-    if (finalposition >= freemanPositionX &&
-        indexHoleList > 0 &&
-        lastStageHole != true) {
-      indexHoleList--;
-    }
-    getCurrentBarriersIndex();
-    await Future.delayed(const Duration(milliseconds: 1), () async {
-      if (barriers[0]['margin-left']! - offsetX < freemanPositionX + 25 &&
-          barriers[0]['margin-left']! - offsetX + 200 >= freemanPositionX) {
-        if (freemanPositionY >= 235) {
-          offsetX--;
-          avatarWithBarrierState = true;
-          foreOne = true;
-        }
-      } else {
-        if (foreOne == true) {
-          await avatarMainBottomMargin();
-          foreOne = false;
-        }
-        offsetX--;
-      }
-    });
-    update();
-  }
-
-*/

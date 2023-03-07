@@ -45,13 +45,10 @@ class RudderController extends GetxController {
 
   dynamic cont = Move(width: 720);
   animateLossPosition() async {
-    print("+++++");
     await Future.delayed(const Duration(milliseconds: 5), () {
       Move.leftLossPosition = Move.leftLossPosition! + 5;
     });
     if (Move.leftLossPosition! < cont.width! * 0.67) {
-      print("....${Move.leftLossPosition}");
-
       animateLossPosition();
     }
     update();
@@ -74,10 +71,6 @@ class RudderController extends GetxController {
     } else {
       executeRudderFailForOnce = false;
       rudderFail(index);
-      /*  rudderFail(1);
-      rudderFail(2);
-      rudderFail(3);*/
-      //   }
     }
 
     update();

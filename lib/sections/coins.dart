@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:freeman/controller/coins_controller.dart';
 import 'package:freeman/controller/move.dart';
 
 class Coin extends StatelessWidget {
