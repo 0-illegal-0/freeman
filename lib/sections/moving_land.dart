@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freeman/controller/move.dart';
 
+import '../data/move_land.dart';
+
 class MovingLand extends StatelessWidget {
   const MovingLand({Key? key, this.offsetX, this.horizontalLand})
       : super(key: key);

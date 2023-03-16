@@ -23,6 +23,7 @@ import 'package:freeman/sections/top_bar.dart';
 import 'package:freeman/widget/button.dart';
 import 'package:get/get.dart';
 
+import 'data/coins.dart';
 import 'sections/screen_size_note.dart';
 import 'widget/important_note.dart';
 //import 'dart:async';
